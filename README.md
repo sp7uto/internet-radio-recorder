@@ -1,5 +1,3 @@
-internet-radio · radio-recorder · self-hosted · docker · ffmpeg · python · synology · nas · scheduler · web-ui
-
 # Internet Radio Recorder
 
 Self-hosted Internet radio recorder with a web interface, weekly schedules, stream monitoring, recording library, ICS calendar support, configuration backup/merge, and Docker/Synology deployment.
