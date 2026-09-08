@@ -150,6 +150,36 @@ Lekki, samodzielny rejestrator internetowych stacji radiowych z tygodniowym harm
 - **Import / scal** bez kasowania istniejących stacji i harmonogramów,
 - przeciąganie stacji oraz przyciski `↑` / `↓` do zmiany ich kolejności.
 
+<!-- SCREENSHOTS_START -->
+
+## Screenshots
+
+### Today — Scheduled Recordings
+
+![Irr01](docs/screenshots/IRR01.png)
+
+### Calendar
+
+![Irr02](docs/screenshots/IRR02.png)
+
+### Stations
+
+![Irr03](docs/screenshots/IRR03.png)
+
+### Stream Status
+
+![Irr04](docs/screenshots/IRR04.png)
+
+### Recording Library
+
+![Irr05](docs/screenshots/IRR05.png)
+
+### Statistics
+
+![Irr06](docs/screenshots/IRR06.png)
+
+<!-- SCREENSHOTS_END -->
+
 ## Co nowego w 2.1.12
 
 Wersja 2.1.12 dodaje trwałą zmianę kolejności stacji w panelu WWW. Stacje można przeciągać za uchwyt `☰` albo przesuwać przyciskami `↑` i `↓`. Kolejność jest zapisywana bez zmiany formatu `stations.json`, przeżywa restart i backup, a import scalający zachowuje dotychczasowy układ i dopisuje nowe stacje na końcu.
@@ -249,33 +279,3 @@ Obraz bazuje na `debian:bookworm-slim` i zawiera Python 3 oraz FFmpeg/FFprobe. K
 ## Licencja
 
 Projekt jest udostępniany na licencji **MIT**. Zobacz plik [LICENSE](LICENSE).
-
-<!-- SCREENSHOTS_START -->
-
-## Screenshots
-
-### Today — Scheduled Recordings
-
-![Irr01](docs/screenshots/IRR01.png)
-
-### Calendar
-
-![Irr02](docs/screenshots/IRR02.png)
-
-### Stations
-
-![Irr03](docs/screenshots/IRR03.png)
-
-### Stream Status
-
-![Irr04](docs/screenshots/IRR04.png)
-
-### Recording Library
-
-![Irr05](docs/screenshots/IRR05.png)
-
-### Statistics
-
-![Irr06](docs/screenshots/IRR06.png)
-
-<!-- SCREENSHOTS_END -->
