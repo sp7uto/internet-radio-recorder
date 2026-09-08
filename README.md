@@ -249,3 +249,33 @@ Obraz bazuje na `debian:bookworm-slim` i zawiera Python 3 oraz FFmpeg/FFprobe. K
 ## Licencja
 
 Projekt jest udostępniany na licencji **MIT**. Zobacz plik [LICENSE](LICENSE).
+
+<!-- SCREENSHOTS_START -->
+
+## Screenshots
+
+### Irr01
+
+![Irr01](docs/screenshots/IRR01.png)
+
+### Irr02
+
+![Irr02](docs/screenshots/IRR02.png)
+
+### Irr03
+
+![Irr03](docs/screenshots/IRR03.png)
+
+### Irr04
+
+![Irr04](docs/screenshots/IRR04.png)
+
+### Irr05
+
+![Irr05](docs/screenshots/IRR05.png)
+
+### Irr06
+
+![Irr06](docs/screenshots/IRR06.png)
+
+<!-- SCREENSHOTS_END -->
