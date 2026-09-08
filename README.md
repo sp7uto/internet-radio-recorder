@@ -1,133 +1,323 @@
 internet-radio · radio-recorder · self-hosted · docker · ffmpeg · python · synology · nas · scheduler · web-ui
 
-**Project Name:** Internet Radio Recorder
+# Internet Radio Recorder
 
-**Repo:** https://github.com/sp7uto/internet-radio-recorder
+Self-hosted Internet radio recorder with a web interface, weekly schedules, stream monitoring, recording library, ICS calendar support, configuration backup/merge, and Docker/Synology deployment.
 
-I built Internet Radio Recorder because I wanted a simple self-hosted way to record specific Internet radio shows on my NAS without manually starting VLC, maintaining cron jobs, or running a full broadcasting stack.
+Internet Radio Recorder was created as a simple way to record selected Internet radio programmes automatically on a NAS or home server without maintaining cron jobs or running a full broadcast automation stack.
 
-It runs in Docker and provides a web UI for managing stations and weekly recording schedules. It can record one file per programme, handle pre/post margins and shows crossing midnight, check stream health, keep a recording library, export an ICS calendar, apply retention limits, and back up or merge station configurations.
+Current release: **v2.1.12**
 
-I originally built it for my Synology NAS, but it should work on any Docker host.
+## Features
 
-The current release is v2.1.12.
+* multiple Internet radio stations,
+* weekly recording schedules,
+* programme titles,
+* configurable `pre` / `post` recording margins,
+* one file per programme,
+* correct handling of adjacent programmes,
+* support for programmes crossing midnight,
+* recording without re-encoding using `ffmpeg -c:a copy`,
+* manual `REC` / `STOP`,
+* per-station retention limits,
+* per-station storage limits,
+* Today view,
+* Calendar view,
+* History,
+* Stream monitoring,
+* Recording Library,
+* Statistics,
+* stream availability testing,
+* codec and bitrate diagnostics,
+* optional NTFY notifications,
+* optional webhook notifications,
+* ICS calendar subscription,
+* configuration backup,
+* safe configuration import / merge,
+* station reordering using drag-and-drop or `↑` / `↓`,
+* Docker Compose deployment,
+* Synology / Portainer configuration example.
 
-**Deployment:** Docker Compose is included in the repository, together with a separate Synology/Portainer example and installation documentation.
+<!-- SCREENSHOTS_START -->
 
-The project is MIT licensed.
+## Screenshots
 
-**AI involvement:** AI tools were used during development for coding assistance, debugging, testing and documentation. I directed the project, tested it on my own setup and made the product decisions.
+### Today — Scheduled Recordings
 
-I’d especially appreciate feedback from people who already record Internet radio or podcasts on a home server: what would make this useful enough for you to run permanently?
+![Today — Scheduled Recordings](docs/screenshots/IRR01.png)
 
-# Internet Radio Recorder v2.1.12 — Station Order
+### Calendar
 
-Release **2.1.12** focuses on easier management of larger station lists and further refinement of the scheduled recording engine.
+![Calendar](docs/screenshots/IRR02.png)
 
-## Main New Feature
+### Stations
 
-Stations in the web interface can now be arranged in any order:
+![Stations](docs/screenshots/IRR03.png)
 
-* by dragging a station card using the `☰` handle,
-* or by using the `↑` and `↓` buttons.
+### Stream Status
 
-After clicking **SAVE CHANGES**, the new order is stored in `stations.json` and remains unchanged after the container is restarted.
+![Stream Status](docs/screenshots/IRR04.png)
 
-Reordering stations does not modify their configuration or recording schedules.
+### Recording Library
 
-## Fixes Included from 2.1.9–2.1.11
+![Recording Library](docs/screenshots/IRR05.png)
 
-Release 2.1.12 also includes earlier improvements:
+### Statistics
 
-* recordings now stop correctly at the scheduled end time,
-* adjacent programmes from the same station are saved as separate files,
-* correct handling of `pre` / `post` margins,
-* correct handling of programmes that cross midnight,
-* safe **Import / merge** functionality,
-* preservation of existing stations and schedules during import,
-* automatic creation of a timestamped configuration backup before import.
+![Statistics](docs/screenshots/IRR06.png)
 
-## Updating from 2.1.11
+<!-- SCREENSHOTS_END -->
 
-Keep your existing file:
+## Quick Start
 
-```text
-/config/stations.json
-```
+Requirements:
 
-Then replace the application files and rebuild the image:
+* Docker
+* Docker Compose v2
+
+Clone the repository:
 
 ```bash
-docker build --no-cache -t internet-radio-recorder:2.1.12 .
+git clone https://github.com/sp7uto/internet-radio-recorder.git
+cd internet-radio-recorder
 ```
 
-Change the container image to:
-
-```text
-internet-radio-recorder:2.1.12
-```
-
-and redeploy the container.
-
-After the update, it is recommended to perform a full browser refresh:
-
-```text
-Ctrl+F5
-```
-
-The `stations.json` format has not changed.
-
-## Docker Compose
-
-For a fresh installation:
+Create your local configuration:
 
 ```bash
 cp .env.example .env
 cp config/stations.example.json config/stations.json
+```
+
+Edit `.env` and at minimum change:
+
+```text
+CALENDAR_TOKEN
+```
+
+Then start the application:
+
+```bash
 docker compose up -d --build
 ```
 
-The default web interface is available at:
+The web interface is available by default at:
 
 ```text
 http://server-address:8080
 ```
 
+Recordings are stored in:
+
+```text
+./recordings
+```
+
+Application configuration is stored in:
+
+```text
+./config
+```
+
 ## Synology / Portainer
 
-The project also includes configuration examples prepared for Synology NAS and Portainer.
+A separate example configuration is included:
 
-Example directories:
+```text
+docker-compose-portainer.yml
+```
+
+Example Synology paths:
 
 ```text
 /volume1/docker/internet-radio-recorder/config
 /volume1/docker/radio
 ```
 
+See:
+
+```text
+docs/INSTALLATION.md
+```
+
+for detailed installation and upgrade instructions.
+
+## Scheduling
+
+Each station can contain multiple schedule entries for every day of the week.
+
+Example:
+
+```json
+{
+  "start": "20:00",
+  "end": "21:00",
+  "title": "Programme Name",
+  "pre": 2,
+  "post": 3
+}
+```
+
+`pre` and `post` specify recording margins in minutes before and after the scheduled programme.
+
+Programmes crossing midnight are supported.
+
+When **one file per programme** is enabled, the nominal start of the next scheduled programme takes priority over overlapping recording margins.
+
+More information:
+
+```text
+docs/SCHEDULING.md
+```
+
+## Backup and Import
+
+The web interface provides several configuration management options.
+
+**Backup**
+
+Downloads the current `stations.json`.
+
+**Import / Merge**
+
+Keeps existing stations and schedules while adding new, non-conflicting entries.
+
+**Restore Backup**
+
+Replaces the complete configuration.
+
+Before an import operation, Internet Radio Recorder automatically creates a timestamped backup:
+
+```text
+stations.before-import-YYYYMMDD-HHMMSS.json
+```
+
+More information:
+
+```text
+docs/BACKUP_AND_MERGE.md
+```
+
+## ICS Calendar
+
+The recording schedule can be subscribed to as an ICS calendar.
+
+Example:
+
+```text
+http://server-address:8080/calendar.ics?token=YOUR_TOKEN
+```
+
+The access token is configured using:
+
+```text
+CALENDAR_TOKEN
+```
+
+## Notifications
+
+Optional notifications can be sent using:
+
+* NTFY,
+* webhook endpoints.
+
+These can be used to report recording events and application status.
+
 ## Security
 
-The administration panel **does not include built-in authentication**.
+The web administration panel **does not provide built-in authentication**.
 
-Do not expose the application port directly to the Internet.
+Anyone with access to the web interface may be able to:
+
+* modify station configuration,
+* start or stop recordings,
+* delete recordings from the library.
+
+Do **not** expose port `8080` directly to the public Internet.
 
 Recommended remote access methods:
 
-* Tailscale / VPN,
-* or a reverse proxy with HTTPS and authentication.
+* Tailscale,
+* VPN,
+* reverse proxy with HTTPS and authentication.
 
-## Tag
+See:
+
+```text
+SECURITY.md
+```
+
+## Documentation
+
+* [Installation and upgrades](docs/INSTALLATION.md)
+* [Configuration](docs/CONFIGURATION.md)
+* [Scheduling](docs/SCHEDULING.md)
+* [Backup and import/merge](docs/BACKUP_AND_MERGE.md)
+* [API and endpoints](docs/API.md)
+* [Troubleshooting](docs/TROUBLESHOOTING.md)
+* [Security](SECURITY.md)
+* [Changelog](CHANGELOG.md)
+
+## Technical Details
+
+The Docker image is based on:
+
+```text
+debian:bookworm-slim
+```
+
+It includes:
+
+* Python 3,
+* FFmpeg,
+* FFprobe.
+
+The container runs as UID:
+
+```text
+1000
+```
+
+Mounted `/config` and `/recordings` directories must therefore be writable by that user.
+
+## Latest Release
+
+Current stable release:
 
 ```text
 v2.1.12
 ```
 
-## Commit
+Version 2.1.12 adds persistent station ordering and includes fixes for scheduled recording, adjacent programmes, midnight transitions, and safe configuration merging.
+
+See the GitHub Releases section for full release notes and downloadable packages.
+
+## Contributing
+
+Bug reports, feature requests and pull requests are welcome.
+
+Please see:
 
 ```text
-88e0b8f — Release v2.1.12
+CONTRIBUTING.md
 ```
 
-Thank you for using Internet Radio Recorder.
+## License
+
+Internet Radio Recorder is released under the **MIT License**.
+
+See:
+
+```text
+LICENSE
+```
+
+## Feedback
+
+If you already record Internet radio or podcasts on a home server, feedback is especially welcome.
+
+Ideas, bug reports and suggestions can be submitted through GitHub Issues.
+
 
 
 # Internet Radio Recorder 2.1.12
