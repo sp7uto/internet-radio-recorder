@@ -1,0 +1,21 @@
+services:
+  radio-recorder:
+    image: internet-radio-recorder:2.1.12
+    container_name: Internet-Radio-Recorder
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Warsaw
+      CONFIG_FILE: /config/stations.json
+      RECORDINGS_DIR: /recordings
+      WEB_PORT: "8080"
+      RETRY_DELAY: "15"
+      RETENTION_CHECK_MINUTES: "30"
+      HEALTHCHECK_SECONDS: "60"
+      NTFY_URL: ""
+      WEBHOOK_URL: ""
+      CALENDAR_TOKEN: "change-me-long-random-token"  # zmień przed użyciem
+    ports:
+      - "8080:8080"
+    volumes:
+      - /volume1/docker/internet-radio-recorder/config:/config:rw
+      - /volume1/docker/radio:/recordings:rw

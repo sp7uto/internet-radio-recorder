@@ -1,0 +1,77 @@
+{
+  "stations": [
+    {
+      "name": "Radio357",
+      "url": "https://n-11-21.dcs.redcdn.pl/sc/o2/radio357/live/radio357_pr.livx?preroll=0",
+      "codec": "aac",
+      "segment_minutes": 60,
+      "enabled": true,
+      "retention_days": 90,
+      "schedule": {
+        "mon": [
+          {
+            "start": "00:00",
+            "end": "23:59",
+            "title": "Radio 357",
+            "pre": 0,
+            "post": 0
+          }
+        ],
+        "tue": [
+          {
+            "start": "00:00",
+            "end": "23:59",
+            "title": "Radio 357",
+            "pre": 0,
+            "post": 0
+          }
+        ],
+        "wed": [
+          {
+            "start": "00:00",
+            "end": "23:59",
+            "title": "Radio 357",
+            "pre": 0,
+            "post": 0
+          }
+        ],
+        "thu": [
+          {
+            "start": "00:00",
+            "end": "23:59",
+            "title": "Radio 357",
+            "pre": 0,
+            "post": 0
+          }
+        ],
+        "fri": [
+          {
+            "start": "00:00",
+            "end": "23:59",
+            "title": "Radio 357",
+            "pre": 0,
+            "post": 0
+          }
+        ],
+        "sat": [
+          {
+            "start": "00:00",
+            "end": "23:59",
+            "title": "Radio 357",
+            "pre": 0,
+            "post": 0
+          }
+        ],
+        "sun": [
+          {
+            "start": "00:00",
+            "end": "23:59",
+            "title": "Radio 357",
+            "pre": 0,
+            "post": 0
+          }
+        ]
+      }
+    }
+  ]
+}

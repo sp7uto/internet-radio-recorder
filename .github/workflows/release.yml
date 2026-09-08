@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version
+        id: version
+        shell: bash
+        run: |
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          test -n "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Skip when release already exists
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build release archives
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          PREFIX="internet-radio-recorder-v${VERSION}/"
+          git archive --format=zip --prefix="$PREFIX" HEAD > "dist/internet-radio-recorder-v${VERSION}.zip"
+          git archive --format=tar --prefix="$PREFIX" HEAD | gzip -9 > "dist/internet-radio-recorder-v${VERSION}.tar.gz"
+          (cd dist && sha256sum internet-radio-recorder-v${VERSION}.zip internet-radio-recorder-v${VERSION}.tar.gz > SHA256SUMS.txt)
+
+      - name: Create GitHub release
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          NOTES="RELEASE_NOTES_v${VERSION}.md"
+          gh release create "$TAG" \
+            dist/internet-radio-recorder-v${VERSION}.zip \
+            dist/internet-radio-recorder-v${VERSION}.tar.gz \
+            dist/SHA256SUMS.txt \
+            --target "$GITHUB_SHA" \
+            --title "Internet Radio Recorder v${VERSION} — Station Order" \
+            --notes-file "$NOTES"

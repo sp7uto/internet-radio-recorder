@@ -1,0 +1,22 @@
+services:
+  radio-recorder:
+    build: .
+    image: internet-radio-recorder:2.1.12
+    container_name: Internet-Radio-Recorder
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Europe/Warsaw}
+      CONFIG_FILE: /config/stations.json
+      RECORDINGS_DIR: /recordings
+      WEB_PORT: ${WEB_PORT:-8080}
+      RETRY_DELAY: ${RETRY_DELAY:-15}
+      RETENTION_CHECK_MINUTES: ${RETENTION_CHECK_MINUTES:-30}
+      HEALTHCHECK_SECONDS: ${HEALTHCHECK_SECONDS:-60}
+      NTFY_URL: ${NTFY_URL:-}
+      WEBHOOK_URL: ${WEBHOOK_URL:-}
+      CALENDAR_TOKEN: ${CALENDAR_TOKEN:-change-me-to-a-long-random-token}
+    ports:
+      - "${WEB_PORT:-8080}:${WEB_PORT:-8080}"
+    volumes:
+      - ./config:/config:rw
+      - ./recordings:/recordings:rw

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.log
+.env
+.DS_Store
+
+# Runtime state / local data
+config/stations.json
+config/stations.json.bak
+config/stations.before-import-*.json
+config/stream-health.json
+config/executions.json
+recordings/
