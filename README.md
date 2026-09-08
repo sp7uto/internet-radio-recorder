@@ -254,27 +254,27 @@ Projekt jest udostępniany na licencji **MIT**. Zobacz plik [LICENSE](LICENSE).
 
 ## Screenshots
 
-### Irr01
+Today — Scheduled Recordings
 
 ![Irr01](docs/screenshots/IRR01.png)
 
-### Irr02
+Calendar
 
 ![Irr02](docs/screenshots/IRR02.png)
 
-### Irr03
+Stations
 
 ![Irr03](docs/screenshots/IRR03.png)
 
-### Irr04
+Stream Status
 
 ![Irr04](docs/screenshots/IRR04.png)
 
-### Irr05
+Recording Library
 
 ![Irr05](docs/screenshots/IRR05.png)
 
-### Irr06
+Statistics
 
 ![Irr06](docs/screenshots/IRR06.png)
 
