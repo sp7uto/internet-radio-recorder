@@ -4,7 +4,7 @@ Self-hosted Internet radio recorder with a web interface, weekly schedules, stre
 
 Internet Radio Recorder was created as a simple way to record selected Internet radio programmes automatically on a NAS or home server without maintaining cron jobs or running a full broadcast automation stack.
 
-Current release: **v2.2.0**
+Current release: **v2.2.1**
 
 ## Features
 
@@ -29,6 +29,9 @@ Current release: **v2.2.0**
 * codec and bitrate diagnostics,
 * optional NTFY notifications,
 * optional webhook notifications,
+* optional notifications after successful recordings,
+* automatic MP3/AAC output selection when recording starts,
+* detection of empty or missing recording files,
 * ICS calendar subscription,
 * configuration backup,
 * safe configuration import / merge,
@@ -218,6 +221,10 @@ Optional notifications can be sent using:
 
 * NTFY,
 * webhook endpoints.
+
+Set `NOTIFY_ON_COMPLETE=true` to send a notification after each successful
+recording. Empty or missing output files always generate an error notification
+when NTFY or a webhook is configured.
 
 These can be used to report recording events and application status.
 

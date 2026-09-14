@@ -596,6 +596,28 @@ async function loadHealth(){
   }
 }
 
+async function loadHistory(){
+  const box=document.getElementById("execHistory");
+  if(!box)return;
+  box.innerHTML='<span class="muted">Wczytywanie historii...</span>';
+  try{
+    const r=await fetch("/api/executions",{cache:"no-store"});
+    const j=await r.json();
+    if(!r.ok)throw new Error(j.message||j.error||`HTTP ${r.status}`);
+    const rows=[...(j.executions||[])].reverse();
+    box.innerHTML=rows.length?rows.map(x=>`<div class="tl-item exec-${esc(x.status||"warning")}">
+      <b>${esc(x.station||"—")}</b>${x.title?` — ${esc(x.title)}`:""}
+      <div class="muted">${esc(x.started||"—")} → ${esc(x.ended||"—")}</div>
+      <div>Stan: <b>${esc(x.status||"—")}</b> • format: ${esc(x.output_ext||"—")} • kod ffmpeg: ${x.return_code??"—"}</div>
+      <div>Plik: ${esc(x.file||"brak")} • ${fmtBytes(x.size||0)}</div>
+      ${x.last_error?`<div class="danger">${esc(x.last_error)}</div>`:""}
+      ${x.command?`<details><summary>Diagnostyka ffmpeg</summary><code>${esc(x.command)}</code></details>`:""}
+    </div>`).join(""):'<div class="muted">Brak zakończonych nagrań.</div>';
+  }catch(e){
+    box.innerHTML=`<div class="danger">Nie udało się pobrać historii: ${esc(e)}</div>`;
+  }
+}
+
 async function fullLoad(){
   const x=await(await fetch("/api/data",{cache:"no-store"})).json();
   D=x;

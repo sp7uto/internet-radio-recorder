@@ -1,6 +1,6 @@
 services:
   radio-recorder:
-    image: internet-radio-recorder:2.2.0
+    image: internet-radio-recorder:2.2.1
     container_name: Internet-Radio-Recorder
     restart: unless-stopped
     environment:
@@ -13,6 +13,7 @@ services:
       HEALTHCHECK_SECONDS: "60"
       NTFY_URL: ""
       WEBHOOK_URL: ""
+      NOTIFY_ON_COMPLETE: "false"
       CALENDAR_TOKEN: "change-me-long-random-token"  # zmień przed użyciem
     ports:
       - "8080:8080"

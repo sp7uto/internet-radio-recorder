@@ -1,4 +1,4 @@
-import os, json, signal, subprocess, threading, time, shutil, urllib.request
+import os, json, signal, subprocess, threading, time, shutil, urllib.request, shlex
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -10,6 +10,7 @@ RCHECK=int(os.getenv("RETENTION_CHECK_MINUTES","30"))*60
 HEALTHCHECK_SECONDS=max(30,int(os.getenv("HEALTHCHECK_SECONDS","60")))
 NTFY_URL=os.getenv("NTFY_URL","").strip()
 WEBHOOK_URL=os.getenv("WEBHOOK_URL","").strip()
+NOTIFY_ON_COMPLETE=os.getenv("NOTIFY_ON_COMPLETE","").strip().lower() in ("1","true","yes","on")
 HEALTHLOG=Path("/config/stream-health.json")
 
 def notify(title,message):
@@ -245,7 +246,7 @@ def build_cmd(st,out,title,slot):
     base=["ffmpeg","-hide_banner","-nostdin","-loglevel","warning",
           "-rw_timeout","15000000","-reconnect","1","-reconnect_streamed","1",
           "-reconnect_at_eof","1","-reconnect_delay_max","10",
-          "-user_agent","Mozilla/5.0 Internet-Radio-Recorder/2.2.0",
+          "-user_agent","Mozilla/5.0 Internet-Radio-Recorder/2.2.1",
           "-i",st["url"],"-map","0:a:0","-vn","-c:a","copy"]
 
     if one:
@@ -274,6 +275,29 @@ def current_recording_info(name):
         return {"file":str(p.relative_to(OUT)),"size":p.stat().st_size}
     except Exception:
         return {"file":None,"size":0}
+
+def recording_result(name,started_at):
+    """Return the newest file created or changed by the current execution."""
+    try:
+        root=OUT/safe(name)
+        threshold=started_at.timestamp()-2 if started_at else time.time()-2
+        files=[p for p in root.rglob("*") if p.is_file() and p.stat().st_mtime>=threshold]
+        if not files:
+            return {"file":None,"size":0,"empty":True}
+        p=max(files,key=lambda x:x.stat().st_mtime)
+        size=p.stat().st_size
+        return {"file":str(p.relative_to(OUT)),"size":size,"empty":size==0}
+    except Exception:
+        return {"file":None,"size":0,"empty":True}
+
+def command_for_log(command):
+    """Hide the stream URL while keeping the ffmpeg invocation useful."""
+    logged=list(command)
+    try:
+        logged[logged.index("-i")+1]="<stream-url>"
+    except (ValueError,IndexError):
+        pass
+    return " ".join(shlex.quote(part) for part in logged)
 
 def station_usage_bytes(st):
     root=OUT/safe(st["name"])
@@ -427,11 +451,18 @@ def worker(name):
 
         try:
             with lock:
-                state[name].update(status="connecting",error="",stop_reason=None,stopped_at=None)
+                state[name].update(status="connecting",error="",last_error="",last_error_at=None,
+                                   stop_reason=None,stopped_at=None)
 
             started_at=datetime.now().astimezone()
+            recording_station=dict(st)
+            probe=ffprobe_info(st["url"])
+            if probe.get("ok") and probe.get("ext") in ("aac","mp3","m4a"):
+                recording_station["detected_ext"]=probe["ext"]
+                recording_station["codec"]=probe.get("codec") or probe["ext"]
+            command=build_cmd(recording_station,out,title,slot)
             p=subprocess.Popen(
-                build_cmd(st,out,title,slot),
+                command,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -444,7 +475,9 @@ def worker(name):
                     status="recording",
                     started=started_at.isoformat(),
                     execution_started=started_at.isoformat(),
-                    recording_slot_id=active_slot_id
+                    recording_slot_id=active_slot_id,
+                    output_ext=recording_station.get("detected_ext") or recording_station.get("codec"),
+                    command=command_for_log(command)
                 )
 
             threading.Thread(target=stderr_reader,args=(name,p),daemon=True).start()
@@ -505,7 +538,7 @@ def worker(name):
             try:
                 with lock:
                     stcopy=dict(state.get(name,{}))
-                info=current_recording_info(name)
+                info=recording_result(name,started_at if 'started_at' in locals() else None)
                 ended=datetime.now().astimezone()
 
                 exec_status="ok"
@@ -513,6 +546,10 @@ def worker(name):
                     exec_status="warning"
                 if stcopy.get("status")=="error":
                     exec_status="error"
+                empty_message=""
+                if info.get("empty"):
+                    exec_status="error"
+                    empty_message="Nagranie nie utworzyło pliku z danymi."
 
                 add_exec({
                     "station":name,
@@ -522,9 +559,18 @@ def worker(name):
                     "status":exec_status,
                     "file":info.get("file"),
                     "size":info.get("size",0),
-                    "last_error":stcopy.get("last_error",""),
-                    "stop_reason":stcopy.get("stop_reason","")
+                    "last_error":stcopy.get("last_error","") or empty_message,
+                    "stop_reason":stcopy.get("stop_reason",""),
+                    "return_code":p.returncode if 'p' in locals() and p is not None else None,
+                    "output_ext":stcopy.get("output_ext",""),
+                    "command":stcopy.get("command","")
                 })
+
+                if info.get("empty"):
+                    notify("Radio Recorder: puste nagranie",f"{name}: {title or 'nagranie'} — nie zapisano danych")
+                elif NOTIFY_ON_COMPLETE:
+                    notify("Radio Recorder: nagranie zakończone",
+                           f"{name}: {title or 'nagranie'} — {info.get('file')} ({info.get('size',0)} B)")
 
                 with lock:
                     if name in state:
