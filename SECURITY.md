@@ -2,7 +2,7 @@
 
 ## Panel WWW
 
-Internet Radio Recorder 2.1.12 nie implementuje własnego logowania ani zarządzania użytkownikami. Każda osoba mająca dostęp do portu WWW może m.in. zmieniać stacje i harmonogram, uruchamiać nagrania, importować konfigurację oraz usuwać pliki z biblioteki.
+Internet Radio Recorder 2.2.0 nie implementuje własnego logowania ani zarządzania użytkownikami. Każda osoba mająca dostęp do portu WWW może m.in. zmieniać stacje i harmonogram, uruchamiać nagrania, importować konfigurację oraz usuwać pliki z biblioteki.
 
 **Nie wystawiaj portu 8080 bezpośrednio do publicznego Internetu.**
 

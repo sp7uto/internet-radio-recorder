@@ -4,7 +4,7 @@ Self-hosted Internet radio recorder with a web interface, weekly schedules, stre
 
 Internet Radio Recorder was created as a simple way to record selected Internet radio programmes automatically on a NAS or home server without maintaining cron jobs or running a full broadcast automation stack.
 
-Current release: **v2.1.12**
+Current release: **v2.2.0**
 
 ## Features
 
@@ -283,10 +283,10 @@ Mounted `/config` and `/recordings` directories must therefore be writable by th
 Current stable release:
 
 ```text
-v2.1.12
+v2.2.0
 ```
 
-Version 2.1.12 adds persistent station ordering and includes fixes for scheduled recording, adjacent programmes, midnight transitions, and safe configuration merging.
+Version 2.2.0 replaces the hand-written HTTP handler with a Flask application served by Waitress. The HTML, CSS and JavaScript now live in separate files, while the API and `stations.json` format remain compatible with 2.1.12.
 
 See the GitHub Releases section for full release notes and downloadable packages.
 
@@ -318,7 +318,7 @@ Ideas, bug reports and suggestions can be submitted through GitHub Issues.
 
 
 
-# Internet Radio Recorder 2.1.12
+# Internet Radio Recorder 2.2.0
 
 Lekki, samodzielny rejestrator internetowych stacji radiowych z tygodniowym harmonogramem, panelem WWW i biblioteką nagrań. Projekt działa w Dockerze i dobrze nadaje się do NAS-ów, w tym Synology.
 
@@ -368,11 +368,11 @@ Lekki, samodzielny rejestrator internetowych stacji radiowych z tygodniowym harm
 
 <!-- SCREENSHOTS_END -->
 
-## Co nowego w 2.1.12
+## Co nowego w 2.2.0
 
-Wersja 2.1.12 dodaje trwałą zmianę kolejności stacji w panelu WWW. Stacje można przeciągać za uchwyt `☰` albo przesuwać przyciskami `↑` i `↓`. Kolejność jest zapisywana bez zmiany formatu `stations.json`, przeżywa restart i backup, a import scalający zachowuje dotychczasowy układ i dopisuje nowe stacje na końcu.
+Wersja 2.2.0 zastępuje ręcznie napisany serwer HTTP aplikacją Flask uruchamianą przez serwer WSGI Waitress. Routing API znajduje się w `api.py`, logika scalania harmonogramów w `schedules.py`, a interfejs został rozdzielony na szablon HTML oraz osobne pliki CSS i JavaScript.
 
-Wersja zawiera też wcześniejsze poprawki 2.1.9–2.1.11: prawidłowe zatrzymywanie nagrań, rozdzielanie sąsiednich audycji i bezpieczny import scalający.
+Format `stations.json`, endpointy, port, katalogi Dockera i sposób wdrożenia na Synology pozostają zgodne z 2.1.12. Przy okazji naprawiono błędne przełączanie widoków Dzisiaj, Kalendarz i Historia.
 
 Pełna historia: [CHANGELOG.md](CHANGELOG.md).
 

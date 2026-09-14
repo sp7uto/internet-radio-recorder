@@ -2,6 +2,23 @@
 
 Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 
+## [2.2.0] — 2026-09-09
+
+### Architektura
+- zastąpiono `BaseHTTPRequestHandler` aplikacją Flask i routingiem opartym na dekoratorach,
+- dodano wielowątkowy serwer WSGI Waitress, działający w tym samym procesie co workery nagrywania,
+- rozdzielono backend API, logikę harmonogramów, szablon HTML, CSS i JavaScript,
+- usunięto ogromny string zawierający cały interfejs.
+
+### Naprawiono
+- niezależne odświeżanie widoków Dzisiaj, Kalendarz i Historia po zmianie zakładki,
+- walidację danych przekazywanych do `/api/save`,
+- ochronę endpointów odczytu i kasowania nagrań przed path traversal.
+
+### Testy i zgodność
+- dodano testy routingu API, zapisu, importu, plików statycznych i ochrony ścieżek,
+- zachowano format `stations.json`, endpointy, port `8080` oraz wolumeny `/config` i `/recordings`.
+
 ## [2.1.12] — 2026-09-05
 
 ### Dodano

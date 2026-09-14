@@ -26,7 +26,10 @@ Przykładowa struktura:
 ├── config/
 ├── Dockerfile
 ├── recorder.py
-├── web.py
+├── api.py
+├── schedules.py
+├── requirements.txt
+├── templates/
 └── static/
 
 /volume1/docker/radio/
@@ -36,10 +39,10 @@ Zbuduj obraz:
 
 ```bash
 cd /volume1/docker/internet-radio-recorder
-docker build --no-cache -t internet-radio-recorder:2.1.12 .
+docker build --no-cache -t internet-radio-recorder:2.2.0 .
 ```
 
-Następnie utwórz/redeployuj kontener na podstawie `docker-compose-portainer.yml` lub w Portainerze ustaw obraz `internet-radio-recorder:2.1.12`.
+Następnie utwórz/redeployuj kontener na podstawie `docker-compose-portainer.yml` lub w Portainerze ustaw obraz `internet-radio-recorder:2.2.0`.
 
 ## 3. Aktualizacja z wcześniejszej wersji
 
@@ -48,7 +51,7 @@ Najważniejsza zasada: **nie nadpisuj własnego `config/stations.json` plikiem p
 Przed aktualizacją warto pobrać Backup z panelu. Następnie:
 
 ```bash
-docker build --no-cache -t internet-radio-recorder:2.1.12 .
+docker build --no-cache -t internet-radio-recorder:2.2.0 .
 ```
 
 Zmień tag obrazu kontenera i wykonaj redeploy. Po aktualizacji wykonaj pełne odświeżenie strony (`Ctrl+F5`).

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Internet Radio Recorder v2.2.0</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<h1>Internet Radio Recorder v2.2.0</h1>
+<div class="subtitle">Nagrywanie • harmonogram • retencja • biblioteka • statystyki</div>
+
+<div class="topstats">
+  <div class="stat"><span class="muted">Stacje</span><b id="stStations">—</b></div>
+  <div class="stat"><span class="muted">Nagrywa teraz</span><b id="stRecording">—</b></div>
+  <div class="stat"><span class="muted">Pliki</span><b id="stFiles">—</b></div>
+  <div class="stat"><span class="muted">Zajęte miejsce</span><b id="stSize">—</b></div>
+  <div class="stat"><span class="muted">Wolne na wolumenie</span><b id="stFree">—</b></div>
+  <div class="diskbar">
+    <div class="storage-head"><span>Zajętość wolumenu Synology</span><span id="diskText">—</span></div>
+    <div class="storage-bar"><div class="storage-fill" id="diskFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button onclick="tab('today')">Dzisiaj</button>
+  <button onclick="tab('stations')">Stacje</button>
+  <button onclick="tab('calendar')">Kalendarz</button>
+  <button onclick="tab('history')">Historia</button>
+  <button onclick="tab('health')">Strumienie</button>
+  <button onclick="tab('library')">Biblioteka</button>
+  <button onclick="tab('stats')">Statystyki</button>
+  <button onclick="location=calendarUrl()">Kalendarz ICS</button>
+  <button onclick="backup()">Backup</button>
+  <button onclick="document.getElementById('mergeFile').click()">Import / scal</button>
+  <input id="mergeFile" type="file" accept=".json,application/json" style="display:none" onchange="importBackup(this,'merge')">
+  <button onclick="document.getElementById('replaceFile').click()">Przywróć backup</button>
+  <input id="replaceFile" type="file" accept=".json,application/json" style="display:none" onchange="importBackup(this,'replace')">
+</div>
+
+<div id="today" class="hide">
+  <div class="today-grid">
+    <div class="today-card"><span class="muted">Teraz</span><div id="todayNow"></div></div>
+    <div class="today-card"><span class="muted">Następnie</span><div id="todayNext"></div></div>
+    <div class="today-card"><span class="muted">Dzisiaj</span><div id="todayCount"></div></div>
+  </div>
+  <div class="card"><h2>Dzisiejsza rozpiska</h2><div id="todayTimeline" class="timeline"></div></div>
+</div>
+<div id="history" class="hide">
+  <div class="card"><h2>Historia wykonania zadań</h2><div id="execHistory"></div></div>
+</div>
+<div id="stations">
+  <div class="station-tools">
+    <button onclick="add()">+ DODAJ STACJĘ</button>
+    <button class="primary" onclick="saveAll()">ZAPISZ ZMIANY</button>
+    <span class="muted">Kolejność: przeciągnij ☰ albo użyj ↑ / ↓, następnie zapisz.</span>
+    <span id="saveStatus" class="save-status muted"></span>
+  </div>
+  <div id="cards"></div>
+</div>
+<div id="calendar" class="hide">
+  <div class="card">
+    <h2>Kalendarz tygodniowy</h2>
+    <div class="calendar-wrap"><div id="weekCalendar" class="weekcal"></div></div>
+  </div>
+  <div class="card">
+    <h2>Najbliższe zadania</h2>
+    <div id="upcomingList" class="upcoming"></div>
+  </div>
+</div>
+<div id="health" class="hide">
+  <div class="card"><h2>Stan strumieni</h2><div id="healthList"></div></div>
+</div>
+<div id="library" class="hide"></div>
+<div id="stats" class="hide"></div>
+
+<script>window.CALENDAR_TOKEN={{ calendar_token|tojson }};</script>
+<script src="/static/app.js"></script>
+</body>
+</html>

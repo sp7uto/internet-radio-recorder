@@ -1,6 +1,6 @@
 # API i endpointy
 
-API jest wewnętrznym interfejsem panelu WWW. W 2.1.12 nie ma mechanizmu logowania — patrz `SECURITY.md`.
+API jest wewnętrznym interfejsem panelu WWW. Od 2.2.0 routing obsługuje Flask, a aplikację podaje Waitress. Nadal nie ma mechanizmu logowania — patrz `SECURITY.md`.
 
 ## Odczyt
 
