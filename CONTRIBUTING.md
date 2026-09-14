@@ -5,7 +5,7 @@ Zmiany są mile widziane w postaci małych, czytelnych pull requestów.
 Przed wysłaniem PR:
 
 ```bash
-python3 -m compileall -q recorder.py web.py tests
+python3 -m compileall -q recorder.py api.py schedules.py tests
 python3 -m unittest discover -s tests -v
 ```
 

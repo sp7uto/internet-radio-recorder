@@ -40,7 +40,7 @@ scheduler
 ```bash
 git init
 git add .
-git commit -m "Release v2.1.12"
+git commit -m "Release v2.2.0"
 git branch -M main
 git remote add origin git@github.com:TWOJ_LOGIN/internet-radio-recorder.git
 git push -u origin main
@@ -49,26 +49,26 @@ git push -u origin main
 ## Tag
 
 ```bash
-git tag -a v2.1.12 -m "Internet Radio Recorder v2.1.12"
-git push origin v2.1.12
+git tag -a v2.2.0 -m "Internet Radio Recorder v2.2.0"
+git push origin v2.2.0
 ```
 
 ## GitHub Release
 
-**Tag:** `v2.1.12`
+**Tag:** `v2.2.0`
 
 **Tytuł:**
 
 ```text
-Internet Radio Recorder v2.1.12 — Station Order
+Internet Radio Recorder v2.2.0 — Architecture Refresh
 ```
 
-Treść wydania można skopiować z `RELEASE_NOTES_v2.1.12.md`.
+Treść wydania można skopiować z `RELEASE_NOTES_v2.2.0.md`.
 
 Jako asset warto dołączyć:
 
 ```text
-internet-radio-recorder-v2.1.12.zip
+internet-radio-recorder-v2.2.0.zip
 ```
 
 ## Branch protection

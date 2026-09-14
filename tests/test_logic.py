@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, timezone
 
 import recorder
-from web import merge_station_configs
+from schedules import merge_station_configs
 
 
 def empty_schedule():

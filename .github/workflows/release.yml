@@ -65,5 +65,5 @@ jobs:
             dist/internet-radio-recorder-v${VERSION}.tar.gz \
             dist/SHA256SUMS.txt \
             --target "$GITHUB_SHA" \
-            --title "Internet Radio Recorder v${VERSION} — Station Order" \
+            --title "Internet Radio Recorder v${VERSION} — Architecture Refresh" \
             --notes-file "$NOTES"
