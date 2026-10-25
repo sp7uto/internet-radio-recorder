@@ -24,3 +24,12 @@ jobs:
           bash -n deploy/irr-docker-update deploy/install-vps.sh
       - name: Build Docker image
         run: docker build -t internet-radio-recorder:ci .
+      - name: Isolated end-to-end FFmpeg recovery test in container
+        run: |
+          docker run --rm --network none \
+            --mount type=bind,src="$PWD/tests",dst=/tests,readonly \
+            --tmpfs /config:rw,uid=1000,gid=1000 \
+            --tmpfs /recordings:rw,uid=1000,gid=1000 \
+            --entrypoint python3 \
+            internet-radio-recorder:ci \
+            /tests/test_recovery_container.py
