@@ -18,8 +18,10 @@ The default is `false`: existing deployments behave exactly as before.
 When enabled, the original file keeps its old name. If the FFmpeg process exits
 unexpectedly while the same scheduled programme is still active, its first
 retry writes a separate file ending in `_part02`, the next in `_part03`,
-and so on. The counter resets for the next programme. The original fragment
-is never deliberately rewritten by a retry.
+and so on. The counter resets for the next programme, but occupied filenames
+are skipped (including after a container restart). FFmpeg also uses `-n` in
+this optional mode, so it refuses an overwrite in case of a filename race.
+The original fragment is never deliberately rewritten by a retry.
 
 This setting applies only to scheduled `one_file_per_program` recordings.
 Segmented output and manual recordings are unchanged. Fragments are not
