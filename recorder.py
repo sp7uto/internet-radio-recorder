@@ -252,8 +252,21 @@ def build_cmd(st,out,title,slot,recovery_part=0):
 
     if one:
         stamp=datetime.now().strftime("%Y-%m-%d_%H-%M")
-        suffix=("_part"+str(recovery_part+1).zfill(2)) if PRESERVE_RECOVERY_PARTS and recovery_part>0 else ""
-        path=str(out/datetime.now().strftime("%Y-%m-%d")/(safe(st["name"])+"_"+stamp+label+suffix+"."+ext))
+        directory=out/datetime.now().strftime("%Y-%m-%d")
+        stem=safe(st["name"])+"_"+stamp+label
+        if PRESERVE_RECOVERY_PARTS:
+            # The worker's retry counter resets after a container restart.
+            # Skip occupied names rather than reusing an earlier fragment.
+            part=max(1, recovery_part+1)
+            while True:
+                suffix="" if part==1 else "_part"+str(part).zfill(2)
+                path=directory/(stem+suffix+"."+ext)
+                if not path.exists():
+                    break
+                part+=1
+            # Fail instead of overwriting if another writer wins the race.
+            return base+["-n","-f",mux,str(path)]
+        path=str(directory/(stem+"."+ext))
         return base+["-f",mux,path]
 
     pattern=str(out/"%Y-%m-%d"/(safe(st["name"])+"_%H-%M-%S"+label+"."+ext))
