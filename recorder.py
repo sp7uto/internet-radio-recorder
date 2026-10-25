@@ -1,6 +1,7 @@
 import os, json, signal, subprocess, threading, time, shutil, urllib.request, shlex
 from pathlib import Path
 from datetime import datetime, timedelta
+from urllib.parse import urlsplit
 
 CONFIG=os.getenv("CONFIG_FILE","/config/stations.json")
 OUT=Path(os.getenv("RECORDINGS_DIR","/recordings"))
@@ -244,9 +245,14 @@ def build_cmd(st,out,title,slot,recovery_part=0):
     label="_"+safe(title) if title else ""
     one=bool(st.get("one_file_per_program",False)) and slot is not None
 
+    is_hls=urlsplit(st["url"]).path.lower().endswith(".m3u8")
     base=["ffmpeg","-hide_banner","-nostdin","-loglevel","warning",
-          "-rw_timeout","15000000","-reconnect","1","-reconnect_streamed","1",
-          "-reconnect_at_eof","1","-reconnect_delay_max","10",
+          "-rw_timeout","15000000","-reconnect","1","-reconnect_streamed","1"]
+    # On HLS, reconnect_at_eof loops at segment EOF and prevents opening audio.
+    # Keep the legacy flag unchanged on ordinary HTTP audio streams.
+    if not is_hls:
+        base+=["-reconnect_at_eof","1"]
+    base+=["-reconnect_delay_max","10",
           "-user_agent","Mozilla/5.0 Internet-Radio-Recorder/2.2.1",
           "-i",st["url"],"-map","0:a:0","-vn","-c:a","copy"]
 
