@@ -99,7 +99,13 @@ class ContainerRecoveryTests(unittest.TestCase):
                     worker.start()
                     try:
                         preserved = []
-                        for suffix in ("_Test.mp3", "_Test_part02.mp3", "_Test_part03.mp3"):
+                        iterations = int(os.environ.get("IRR_RECOVERY_ITERATIONS", "3"))
+                        self.assertGreaterEqual(iterations, 3)
+                        suffixes = ["_Test.mp3"] + [
+                            "_Test_part%02d.mp3" % part
+                            for part in range(2, iterations + 1)
+                        ]
+                        for suffix in suffixes:
                             output = await_output(suffix)
                             proc = recorder.procs.get(station["name"])
                             self.assertIsNotNone(proc)
@@ -115,17 +121,18 @@ class ContainerRecoveryTests(unittest.TestCase):
                                 self.assertTrue(old.is_file())
                                 self.assertEqual(hashlib.sha256(old.read_bytes()).hexdigest(), checksum)
 
-                        # After three failures, the schedule closes: no fourth recording.
+                        # After repeated failures, the schedule closes: no new recording.
                         schedule_open.clear()
                         deadline = time.monotonic() + 10
-                        while time.monotonic() < deadline and len(history) < 3:
+                        while time.monotonic() < deadline and len(history) < iterations:
                             time.sleep(0.1)
-                        self.assertGreaterEqual(len(history), 3)
+                        self.assertGreaterEqual(len(history), iterations)
                         count = len(list(recording_root.rglob("*.mp3")))
                         time.sleep(3)
                         self.assertEqual(len(list(recording_root.rglob("*.mp3"))), count)
-                        self.assertEqual(count, 3)
-                        self.assertGreaterEqual(recorder.state[station["name"]]["reconnects"], 2)
+                        self.assertEqual(count, iterations)
+                        self.assertGreaterEqual(recorder.state[station["name"]]["reconnects"], iterations - 1)
+                        print("SOAK_OK fragments=%d history=%d reconnects=%d" % (\n                            count, len(history), recorder.state[station["name"]]["reconnects"]))
                     finally:
                         schedule_open.clear()
                         recorder.running = False
