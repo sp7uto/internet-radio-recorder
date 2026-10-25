@@ -132,7 +132,8 @@ class ContainerRecoveryTests(unittest.TestCase):
                         self.assertEqual(len(list(recording_root.rglob("*.mp3"))), count)
                         self.assertEqual(count, iterations)
                         self.assertGreaterEqual(recorder.state[station["name"]]["reconnects"], iterations - 1)
-                        print("SOAK_OK fragments=%d history=%d reconnects=%d" % (\n                            count, len(history), recorder.state[station["name"]]["reconnects"]))
+                        print("SOAK_OK fragments=%d history=%d reconnects=%d" % (
+                            count, len(history), recorder.state[station["name"]]["reconnects"]))
                     finally:
                         schedule_open.clear()
                         recorder.running = False
