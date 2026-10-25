@@ -1,6 +1,7 @@
 import os, json, signal, subprocess, threading, time, shutil, urllib.request, shlex
 from pathlib import Path
 from datetime import datetime, timedelta
+from urllib.parse import urlsplit
 
 CONFIG=os.getenv("CONFIG_FILE","/config/stations.json")
 OUT=Path(os.getenv("RECORDINGS_DIR","/recordings"))
@@ -11,6 +12,7 @@ HEALTHCHECK_SECONDS=max(30,int(os.getenv("HEALTHCHECK_SECONDS","60")))
 NTFY_URL=os.getenv("NTFY_URL","").strip()
 WEBHOOK_URL=os.getenv("WEBHOOK_URL","").strip()
 NOTIFY_ON_COMPLETE=os.getenv("NOTIFY_ON_COMPLETE","").strip().lower() in ("1","true","yes","on")
+PRESERVE_RECOVERY_PARTS=os.getenv("PRESERVE_RECOVERY_PARTS","false").strip().lower() in ("1","true","yes","on")
 HEALTHLOG=Path("/config/stream-health.json")
 
 def notify(title,message):
@@ -235,7 +237,7 @@ def ffprobe_info(url):
     except Exception as e:
         return {"ok":False,"message":str(e)}
 
-def build_cmd(st,out,title,slot):
+def build_cmd(st,out,title,slot,recovery_part=0):
     ext=st.get("detected_ext") or st.get("codec","aac")
     if ext not in ("aac","mp3","m4a"):
         ext="aac"
@@ -243,15 +245,34 @@ def build_cmd(st,out,title,slot):
     label="_"+safe(title) if title else ""
     one=bool(st.get("one_file_per_program",False)) and slot is not None
 
+    is_hls=urlsplit(st["url"]).path.lower().endswith(".m3u8")
     base=["ffmpeg","-hide_banner","-nostdin","-loglevel","warning",
-          "-rw_timeout","15000000","-reconnect","1","-reconnect_streamed","1",
-          "-reconnect_at_eof","1","-reconnect_delay_max","10",
+          "-rw_timeout","15000000","-reconnect","1","-reconnect_streamed","1"]
+    # On HLS, reconnect_at_eof loops at segment EOF and prevents opening audio.
+    # Keep the legacy flag unchanged on ordinary HTTP audio streams.
+    if not is_hls:
+        base+=["-reconnect_at_eof","1"]
+    base+=["-reconnect_delay_max","10",
           "-user_agent","Mozilla/5.0 Internet-Radio-Recorder/2.2.1",
           "-i",st["url"],"-map","0:a:0","-vn","-c:a","copy"]
 
     if one:
         stamp=datetime.now().strftime("%Y-%m-%d_%H-%M")
-        path=str(out/datetime.now().strftime("%Y-%m-%d")/(safe(st["name"])+"_"+stamp+label+"."+ext))
+        directory=out/datetime.now().strftime("%Y-%m-%d")
+        stem=safe(st["name"])+"_"+stamp+label
+        if PRESERVE_RECOVERY_PARTS:
+            # The worker's retry counter resets after a container restart.
+            # Skip occupied names rather than reusing an earlier fragment.
+            part=max(1, recovery_part+1)
+            while True:
+                suffix="" if part==1 else "_part"+str(part).zfill(2)
+                path=directory/(stem+suffix+"."+ext)
+                if not path.exists():
+                    break
+                part+=1
+            # Fail instead of overwriting if another writer wins the race.
+            return base+["-n","-f",mux,str(path)]
+        path=str(directory/(stem+"."+ext))
         return base+["-f",mux,path]
 
     pattern=str(out/"%Y-%m-%d"/(safe(st["name"])+"_%H-%M-%S"+label+"."+ext))
@@ -379,6 +400,8 @@ def stderr_reader(name, p):
                 state[name]["last_error_at"]=datetime.now().astimezone().isoformat()
 
 def worker(name):
+    recovery_part=0
+    recovery_slot=None
     while running:
         st=next((x for x in load() if x.get("name")==name),None)
         if not st:
@@ -405,6 +428,9 @@ def worker(name):
 
         should_run=st.get("enabled",True) and (manual or ok)
         active_slot_id=(slot or {}).get("_identity") if slot else None
+        if recovery_slot!=active_slot_id:
+            recovery_part=0
+            recovery_slot=active_slot_id
 
         # Jeśli proces już działa, NIE blokujemy się na stderr.
         # Co sekundę ponownie sprawdzamy harmonogram.
@@ -439,6 +465,7 @@ def worker(name):
             continue
 
         if not should_run:
+            recovery_part=0
             with lock:
                 state[name].update(
                     status="disabled" if not st.get("enabled",True) else "waiting",
@@ -460,7 +487,7 @@ def worker(name):
             if probe.get("ok") and probe.get("ext") in ("aac","mp3","m4a"):
                 recording_station["detected_ext"]=probe["ext"]
                 recording_station["codec"]=probe.get("codec") or probe["ext"]
-            command=build_cmd(recording_station,out,title,slot)
+            command=build_cmd(recording_station,out,title,slot,recovery_part=recovery_part)
             p=subprocess.Popen(
                 command,
                 stdout=subprocess.DEVNULL,
@@ -584,14 +611,18 @@ def worker(name):
         with lock:
             reason=state.get(name,{}).get("stop_reason")
         if running and reason not in ("schedule_end","station_disabled","station_removed","program_change"):
+            if PRESERVE_RECOVERY_PARTS and slot is not None and bool(st.get("one_file_per_program",False)):
+                recovery_part+=1
             with lock:
                 if name in state:
                     state[name]["reconnects"]=int(state[name].get("reconnects",0))+1
                     state[name]["status"]="retrying"
             time.sleep(RETRY)
         elif reason=="program_change":
+            recovery_part=0
             time.sleep(0.05)
         else:
+            recovery_part=0
             time.sleep(1)
 
 def ensure():
