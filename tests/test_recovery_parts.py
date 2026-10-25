@@ -40,6 +40,31 @@ class RecoveryPartsTests(unittest.TestCase):
                 self.assertIn("_part02.mp3", second)
                 self.assertIn("_part03.mp3", third)
 
+    def test_existing_fragments_are_preserved_after_restart(self):
+        with TemporaryDirectory() as directory:
+            with patch.object(recorder, "PRESERVE_RECOVERY_PARTS", True):
+                original = Path(self.output_path(directory, 0))
+                original.parent.mkdir(parents=True, exist_ok=True)
+                original.write_bytes(b"original-audio")
+                second = Path(self.output_path(directory, 0))
+                self.assertIn("_part02.mp3", second.name)
+                second.write_bytes(b"second-audio")
+                third = Path(self.output_path(directory, 0))
+                self.assertIn("_part03.mp3", third.name)
+                self.assertEqual(original.read_bytes(), b"original-audio")
+                self.assertEqual(second.read_bytes(), b"second-audio")
+
+    def test_enabled_uses_ffmpeg_no_overwrite_guard(self):
+        with TemporaryDirectory() as directory:
+            with patch.object(recorder, "PRESERVE_RECOVERY_PARTS", True):
+                cmd = recorder.build_cmd(self.station, Path(directory),
+                                         "Test", self.slot)
+                self.assertIn("-n", cmd)
+            with patch.object(recorder, "PRESERVE_RECOVERY_PARTS", False):
+                cmd = recorder.build_cmd(self.station, Path(directory),
+                                         "Test", self.slot)
+                self.assertNotIn("-n", cmd)
+
     def test_segmented_mode_is_unchanged(self):
         with TemporaryDirectory() as directory:
             st = dict(self.station, one_file_per_program=False)
