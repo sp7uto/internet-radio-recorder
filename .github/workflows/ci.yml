@@ -28,6 +28,7 @@ jobs:
         run: |
           docker run --rm --network none \
             --env IRR_DOCKER_RECOVERY_TEST=1 \
+            --env PYTHONPATH=/app \
             --mount type=bind,src="$PWD/tests",dst=/tests,readonly \
             --tmpfs /config:rw,uid=1000,gid=1000 \
             --tmpfs /recordings:rw,uid=1000,gid=1000 \
