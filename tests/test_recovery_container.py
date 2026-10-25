@@ -5,6 +5,7 @@ Force-kills two real FFmpeg processes, then closes the artificial schedule.
 No real stations, user settings or host recording mounts are used.
 """
 import hashlib
+import os
 import shutil
 import subprocess
 import threading
@@ -35,6 +36,8 @@ class SyntheticStream(BaseHTTPRequestHandler):
         pass
 
 
+@unittest.skipUnless(os.environ.get("IRR_DOCKER_RECOVERY_TEST") == "1",
+                     "dedicated container test only")
 class ContainerRecoveryTests(unittest.TestCase):
     def test_real_worker_restores_after_failures_and_respects_schedule_end(self):
         if not shutil.which("ffmpeg"):
