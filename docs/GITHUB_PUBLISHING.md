@@ -1,94 +1,29 @@
-# Publikacja na GitHubie
+# Publikowanie wydań na GitHubie
 
-## Proponowane repozytorium
+Repozytorium: [sp7uto/internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder); gałąź produkcyjna: `main`.
 
-**Nazwa:** `internet-radio-recorder`
+## Zasady
 
-**Opis:**
+- Kod i dokumentację rozwijaj na osobnej gałęzi, testy uruchamiaj w PR.
+- Nie publikuj `.env`, produkcyjnego `stations.json`, tokenów, prywatnych adresów ani nagrań.
+- Zmiany przygotowuj wraz z dokumentacją; zapis `VERSION` jest źródłem numeru wydania.
+- `.github/workflows/ci.yml` sprawdza składnię, testy Python i budowę obrazu Docker.
+- `.github/workflows/release.yml` publikuje archiwa i SHA256 dla nowego numeru wersji.
+- Ten sam workflow po utworzeniu nowego wydania wywołuje `publish-docker.yml` w celu opublikowania obrazu GHCR.
 
-> Self-hosted Internet radio recorder with weekly schedules, web UI, stream health monitoring, ICS calendar, merge import and Synology/Docker support.
+## Nowe wydanie
 
-**Tematy (topics):**
+1. Zaktualizuj `VERSION`, znaczniki obrazu w plikach Compose i wszelkie wyświetlane numery wersji.
+2. Dodaj opis do `CHANGELOG.md` oraz `RELEASE_NOTES_vX.Y.Z.md`.
+3. Otwórz PR; sprawdź CI i przetestuj migrację na kopii konfiguracji.
+4. Scal do `main` dopiero po akceptacji.
+5. Sprawdź GitHub Release, archiwa, sumy kontrolne i GHCR.
+6. Dopiero po weryfikacji pakietu dopuść jego wdrożenie na serwerze.
 
-```text
-internet-radio
-radio-recorder
-self-hosted
-docker
-ffmpeg
-python
-synology
-nas
-scheduler
-```
+## Pierwszy obraz dla istniejącego wydania
 
-## Przed pierwszą publikacją
+Istniejące wydanie `v2.2.1` utworzono zanim uruchomiono publikowanie GHCR. Po zatwierdzeniu nowego workflow obraz dla tej wersji można opublikować ręcznie przez GitHub Actions **Publish Docker image → Run workflow** z wejściem `release_tag=v2.2.1`. Ręczne uruchamianie dla starszych tagów może cofnąć wskazanie `:stable`; używaj wyłącznie najnowszego stabilnego wydania.
 
-1. Wybierz licencję projektu. Dla niewielkiego narzędzia self-hosted najczęściej rozważa się MIT, Apache-2.0 albo GPL-3.0.
-2. Upewnij się, że repozytorium nie zawiera:
-   - prawdziwego `stations.json`,
-   - prywatnych URL-i strumieni,
-   - tokenu `CALENDAR_TOKEN`,
-   - `NTFY_URL` / `WEBHOOK_URL`,
-   - nagrań.
-3. Zostaw w repo tylko `config/stations.example.json` i `.env.example`.
+## Dostęp
 
-`.gitignore` w tej paczce pomija pliki runtime i sekrety.
-
-## Pierwszy commit
-
-```bash
-git init
-git add .
-git commit -m "Release v2.2.0"
-git branch -M main
-git remote add origin git@github.com:TWOJ_LOGIN/internet-radio-recorder.git
-git push -u origin main
-```
-
-## Tag
-
-```bash
-git tag -a v2.2.0 -m "Internet Radio Recorder v2.2.0"
-git push origin v2.2.0
-```
-
-## GitHub Release
-
-**Tag:** `v2.2.0`
-
-**Tytuł:**
-
-```text
-Internet Radio Recorder v2.2.0 — Architecture Refresh
-```
-
-Treść wydania można skopiować z `RELEASE_NOTES_v2.2.0.md`.
-
-Jako asset warto dołączyć:
-
-```text
-internet-radio-recorder-v2.2.0.zip
-```
-
-## Branch protection
-
-Po pierwszej publikacji warto włączyć ochronę `main` i wymagać przejścia workflow `CI` przed scaleniem pull requestów.
-
-## GitHub Actions
-
-Repo zawiera `.github/workflows/ci.yml`. Workflow uruchamia:
-
-- kompilację kontrolną Pythona,
-- testy jednostkowe,
-- budowę obrazu Docker.
-
-## Kolejne wydania
-
-Przy każdej wersji:
-
-1. zaktualizuj numer w interfejsie, User-Agent, Compose i dokumentacji,
-2. dopisz zmiany do `CHANGELOG.md`,
-3. uruchom testy,
-4. utwórz tag `vX.Y.Z`,
-5. opublikuj GitHub Release.
+Workflow wymaga `contents: read` i `packages: write`. Pakiet GHCR musi być dostępny dla kontenera VPS (publicznie albo przez bezpieczny mechanizm `docker login`). Szczegóły wdrożenia: [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md).

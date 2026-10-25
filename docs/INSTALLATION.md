@@ -1,78 +1,53 @@
-# Instalacja i aktualizacja
+# Instalacja i aktualizacja IRR
 
-## 1. Docker Compose — instalacja ogólna
+Stan dokumentacji: **v2.2.1** (2026-09-15). Zakładamy Docker Compose v2.
+
+## Zwykła instalacja
 
 ```bash
+git clone https://github.com/sp7uto/internet-radio-recorder.git
+cd internet-radio-recorder
 cp .env.example .env
 cp config/stations.example.json config/stations.json
+# Ustaw silny CALENDAR_TOKEN i poprawne katalogi/URL stacji.
 docker compose up -d --build
 ```
 
-Domyślny panel: `http://adres-serwera:8080`.
+Panel nasłuchuje na porcie 8080. Nie udostępniaj go bezpośrednio w Internecie: [SECURITY.md](../SECURITY.md).
 
-### Katalogi
+## Dane trwałe
 
-- `./config` → `/config` — konfiguracja i pliki stanu,
-- `./recordings` → `/recordings` — nagrania.
+- `/config` — konfiguracja, historia i pliki stanu; zachowaj `stations.json`,
+- `/recordings` — nagrania i ich katalogi.
 
-Kontener działa z UID `1000`. Oba katalogi muszą być zapisywalne dla tego użytkownika.
+Kontener działa z UID 1000; zapewnij mu uprawnienia do obu katalogów. Nie używaj pochopnie `chmod 777`.
 
-## 2. Synology / Portainer
+## Aktualizacja instalacji budowanej lokalnie
 
-Przykładowa struktura:
+1. Zrób kopię plików Compose, `.env` i katalogu `config`.
+2. Sprawdź aktywne nagrania; nie restartuj kontenera w czasie audycji.
+3. Użyj odpowiedniego wydania/tagu, nie podmieniaj `stations.json` przykładowym plikiem.
+4. Po bezpiecznej przerwie wykonaj `docker compose up -d --build`; sprawdź `/api/data`, Historię i nowo powstałe pliki.
 
-```text
-/volume1/docker/internet-radio-recorder/
-├── config/
-├── Dockerfile
-├── recorder.py
-├── api.py
-├── schedules.py
-├── requirements.txt
-├── templates/
-└── static/
+## Synology / Portainer
 
-/volume1/docker/radio/
-```
+Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją produkcyjną. Typowe katalogi przykładowe: `/volume1/docker/internet-radio-recorder/config` oraz `/volume1/docker/radio`. Dopasuj je do swojej instalacji i ustaw obraz `internet-radio-recorder:2.2.1` dopiero po jego lokalnym zbudowaniu. Nie nadpisuj danych ani nie uruchamiaj dodatkowego rejestratora przypadkowo.
 
-Zbuduj obraz:
+## Automatyczna aktualizacja przez GHCR
 
-```bash
-cd /volume1/docker/internet-radio-recorder
-docker build --no-cache -t internet-radio-recorder:2.2.0 .
-```
+Publikacja obrazu w GHCR i uruchomienie automatu na serwerze to **dwa odrębne etapy**. Dokumentacja i plan: [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md). Samo scalenie zmian w GitHubie nie aktualizuje produkcyjnego Dockera.
 
-Następnie utwórz/redeployuj kontener na podstawie `docker-compose-portainer.yml` lub w Portainerze ustaw obraz `internet-radio-recorder:2.2.0`.
+## Zmienne
 
-## 3. Aktualizacja z wcześniejszej wersji
-
-Najważniejsza zasada: **nie nadpisuj własnego `config/stations.json` plikiem przykładowym**.
-
-Przed aktualizacją warto pobrać Backup z panelu. Następnie:
-
-```bash
-docker build --no-cache -t internet-radio-recorder:2.2.0 .
-```
-
-Zmień tag obrazu kontenera i wykonaj redeploy. Po aktualizacji wykonaj pełne odświeżenie strony (`Ctrl+F5`).
-
-## 4. Zmienne środowiskowe
-
-| Zmienna | Domyślnie | Znaczenie |
-|---|---:|---|
-| `TZ` | `Europe/Warsaw` | strefa czasowa kontenera |
-| `CONFIG_FILE` | `/config/stations.json` | plik konfiguracji |
-| `RECORDINGS_DIR` | `/recordings` | katalog nagrań |
-| `WEB_PORT` | `8080` | port panelu WWW |
-| `RETRY_DELAY` | `15` | opóźnienie po nieoczekiwanym przerwaniu strumienia |
-| `RETENTION_CHECK_MINUTES` | `30` | odstęp kontroli retencji i limitów miejsca |
-| `HEALTHCHECK_SECONDS` | `60` | odstęp testów strumieni (minimum 30 s) |
-| `NTFY_URL` | puste | endpoint NTFY dla powiadomień |
-| `WEBHOOK_URL` | puste | webhook JSON dla powiadomień |
-| `CALENDAR_TOKEN` | puste / warto ustawić | token dostępu do `/calendar.ics` |
-
-## 5. Uprawnienia na Synology
-
-Jeśli panel zgłasza błąd zapisu `stations.json`, sprawdź prawa do katalogu podmontowanego jako `/config`. Jeżeli nagrania nie powstają, sprawdź analogicznie katalog `/recordings`.
-
-Nie zmieniaj praw w ciemno na `777`; lepiej dopasować właściciela/ACL do UID używanego przez kontener.
+| Zmienna | Znaczenie |
+|---|---|
+| `TZ` | strefa czasowa, zwykle Europe/Warsaw |
+| `CONFIG_FILE` | plik konfiguracji, zwykle /config/stations.json |
+| `RECORDINGS_DIR` | katalog nagrań, zwykle /recordings |
+| `WEB_PORT` | port HTTP (8080) |
+| `RETRY_DELAY` | opóźnienie ponowienia strumienia |
+| `RETENTION_CHECK_MINUTES` | interwał retencji |
+| `HEALTHCHECK_SECONDS` | interwał diagnostyki strumieni |
+| `CALENDAR_TOKEN` | sekretny token dostępu do ICS |
+| `NTFY_URL`, `WEBHOOK_URL` | opcjonalne adresy powiadomień |
+| `NOTIFY_ON_COMPLETE` | powiadamianie o zakończeniu nagrania |

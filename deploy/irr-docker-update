@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# Safe updater: never pull from git or edit production Compose; fail closed.
+set -Eeuo pipefail
+
+ROOT="${IRR_ROOT:-/srv/irr/app}"
+SERVICE="${IRR_SERVICE:-radio-recorder}"
+CONTAINER="${IRR_CONTAINER:-Internet-Radio-Recorder}"
+IMAGE="${IRR_IMAGE:-ghcr.io/sp7uto/internet-radio-recorder:stable}"
+OVERLAY="${IRR_COMPOSE_OVERLAY:-/etc/irr-updater/compose.ghcr.yaml}"
+GUARD="${IRR_GUARD:-/usr/local/sbin/irr-update-guard.py}"
+STATE_DIR="${IRR_STATE_DIR:-/var/lib/irr-updater}"
+
+log() { printf '[IRR UPDATE] %s\n' "$*"; }
+fail() { log "ERROR: $*" >&2; exit 1; }
+[[ -f "$ROOT/docker-compose.yml" && -f "$OVERLAY" && -f "$GUARD" ]] || fail "Brak plikow"
+command -v docker >/dev/null || fail "Brak Dockera"
+command -v flock >/dev/null || fail "Brak flock"
+mkdir -p "$STATE_DIR"
+chmod 700 "$STATE_DIR"
+exec 9>"$STATE_DIR/lock"
+flock -n 9 || { log "Trwa inne sprawdzenie"; exit 0; }
+[[ ! -f "$STATE_DIR/HOLD" ]] || { log "Blokada po bledzie: $STATE_DIR/HOLD"; exit 0; }
+
+files=(-f "$ROOT/docker-compose.yml")
+[[ ! -f "$ROOT/compose.override.yaml" ]] || files+=(-f "$ROOT/compose.override.yaml")
+files+=(-f "$OVERLAY")
+compose() { docker compose --project-directory "$ROOT" "${files[@]}" "$@"; }
+
+images="$(compose config --images)" || fail "Niepoprawny Compose"
+[[ "$images" == "$IMAGE" ]] || fail "Obraz Compose nie jest jednoznaczny"
+old_id="$(docker inspect -f '{{.Image}}' "$CONTAINER")" || fail "Kontener nie istnieje"
+container_project="$(docker inspect -f '{{index .Config.Labels "com.docker.compose.project"}}' "$CONTAINER")" || fail "Brak projektu"
+container_service="$(docker inspect -f '{{index .Config.Labels "com.docker.compose.service"}}' "$CONTAINER")" || fail "Brak uslugi"
+compose_project="$(compose config --format json | python3 -c 'import json,sys; print(json.load(sys.stdin).get("name", ""))')" || fail "Nie moge odczytac projektu"
+[[ -n "$container_project" && "$container_project" == "$compose_project" && "$container_service" == "$SERVICE" ]] || fail "Niezgodny projekt/usluga Compose"
+
+log "Pobieram $IMAGE bez zatrzymywania nagran"
+docker pull "$IMAGE" || fail "GHCR: pobranie nie powiodlo sie"
+new_id="$(docker image inspect -f '{{.Id}}' "$IMAGE")" || fail "Brak obrazu"
+if [[ "$new_id" == "$old_id" ]]; then
+    log "Obraz juz aktualny"
+    exit 0
+fi
+
+IRR_CONTAINER="$CONTAINER" python3 "$GUARD" || { log "Odroczono"; exit 0; }
+rollback_tag="irr-rollback:$(date -u +%Y%m%d-%H%M%S)"
+docker image tag "$old_id" "$rollback_tag" || fail "Nie moge zachowac obrazu poprzedniego"
+IRR_CONTAINER="$CONTAINER" python3 "$GUARD" || { log "Odroczono po ponownej kontroli"; exit 0; }
+
+log "Wdrazam nowa wersje"
+upgrade_ok=1
+compose up -d --no-build --no-deps "$SERVICE" || upgrade_ok=0
+
+healthcheck() {
+  [[ "$(docker inspect -f '{{.State.Running}}' "$CONTAINER" 2>/dev/null)" == "true" ]] || return 1
+  docker exec "$CONTAINER" python3 -c '
+import json, os, urllib.request
+port=int(os.environ.get("WEB_PORT", "8080"))
+for endpoint in ("/api/data", "/api/overview"):
+  with urllib.request.urlopen(f"http://127.0.0.1:{port}{endpoint}",timeout=5) as resp:
+    data=json.load(resp)
+  if not isinstance(data,dict): raise RuntimeError("Invalid data")
+  if endpoint == "/api/data" and not {"stations","status"} <= data.keys(): raise RuntimeError("API invalid")
+  if endpoint == "/api/overview" and "recording" not in data: raise RuntimeError("API invalid")
+' >/dev/null 2>&1
+}
+if [[ "$upgrade_ok" == 1 ]]; then
+  for i in $(seq 1 10); do
+    if healthcheck; then
+      log "SUKCES: $new_id; obraz awaryjny: $rollback_tag"
+      exit 0
+    fi
+    sleep 3
+  done
+fi
+
+log "BLAD: proba przywrocenia poprzedniego obrazu"
+printf 'Poprzedni obraz: %s\nNowy obraz: %s\nData: %s\n' "$rollback_tag" "$new_id" "$(date -Is)" > "$STATE_DIR/HOLD"
+chmod 600 "$STATE_DIR/HOLD"
+rollback="$STATE_DIR/compose.rollback.yaml"
+printf 'services:\n  %s:\n    image: %s\n' "$SERVICE" "$rollback_tag" > "$rollback"
+if docker compose --project-directory "$ROOT" "${files[@]}" -f "$rollback" up -d --no-build --no-deps "$SERVICE"; then
+  if healthcheck; then
+    fail "Przywrocono poprzedni obraz. Automat zablokowany: $STATE_DIR/HOLD"
+  fi
+fi
+fail "Rollback wymaga recznej interwencji, sprawdz $STATE_DIR/HOLD"

@@ -50,3 +50,7 @@ Zapis jest atomowy. Przed podmianą `stations.json` poprzednia wersja jest kopio
 ## Kolejność stacji
 
 W 2.1.12 kolejność elementów tablicy `stations` jest równocześnie kolejnością kart w panelu. Można ją zmieniać przez `☰`, `↑` i `↓`, a następnie zapisać przyciskiem `ZAPISZ ZMIANY`.
+
+## Wykrywanie kodeka (od 2.2.1)
+
+Przy starcie nagrania IRR ponownie sprawdza strumień przez FFprobe i dobiera rozszerzenie wynikowego pliku MP3/AAC, zamiast ufać starym wartościom `codec` lub `detected_ext` w pliku stacji. Zachowany zostaje zapis bez ponownego kodowania, o ile źródło i kontener są zgodne. Błędy FFmpeg i brak pliku sprawdzaj w Historii wykonań.
