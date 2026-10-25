@@ -40,3 +40,12 @@ python3 -m py_compile recorder.py
 
 Do not deploy automatically. Review the change and test with a disposable
 stream and a separate recordings directory before considering VPS rollout.
+
+## Additional regression coverage
+
+Tests now cover a retry crossing midnight, preservation of existing filenames
+across restarts, and a competition between two independent FFmpeg processes
+for a shared output path. The `-n` option is a last-resort overwrite guard,
+**not an atomic cross-container lock**. Avoid running multiple IRR instances
+that write to the same directory until a separate multi-writer locking design
+has been implemented and independently tested.
