@@ -129,9 +129,23 @@ class AacHlsTests(unittest.TestCase):
                                                 {"_identity":"one"}, part)
                     target = Path(cmd[-1])
                     target.parent.mkdir(parents=True, exist_ok=True)
-                    proc = subprocess.run(cmd, capture_output=True, timeout=40)
-                    self.assertEqual(proc.returncode, 0,
-                                     proc.stderr.decode(errors="replace")[-1500:])
+                    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL,
+                                            stderr=subprocess.PIPE)
+                    try:
+                        deadline = time.monotonic() + 20
+                        while time.monotonic() < deadline:
+                            if target.exists() and target.stat().st_size > 5000:
+                                break
+                            if proc.poll() is not None:
+                                self.fail("HLS FFmpeg ended early: " +
+                                          proc.stderr.read().decode(errors="replace")[-1000:])
+                            time.sleep(0.1)
+                        else:
+                            self.fail("HLS FFmpeg wrote no audio")
+                    finally:
+                        if proc.poll() is None:
+                            proc.terminate()
+                        proc.communicate(timeout=10)
                     self.assertGreater(target.stat().st_size, 5000)
                     files.append(target)
                 self.assertNotEqual(files[0], files[1])
