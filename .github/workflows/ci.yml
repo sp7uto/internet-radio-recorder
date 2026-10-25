@@ -21,6 +21,6 @@ jobs:
       - name: Verify updater guard and shell syntax
         run: |
           python -m unittest discover -s tools -p 'test_*.py' -v
-          bash -n deploy/irr-docker-update
+          bash -n deploy/irr-docker-update deploy/install-vps.sh
       - name: Build Docker image
         run: docker build -t internet-radio-recorder:ci .

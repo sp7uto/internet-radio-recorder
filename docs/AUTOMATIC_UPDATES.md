@@ -2,6 +2,21 @@
 
 **Stan:** mechanizm zapisany jako kod do przeglądu. Dodanie dokumentacji i workflow do GitHuba **nie oznacza**, że produkcyjny VPS został zaktualizowany ani że timer jest włączony. Wdrożenie na VPS wymaga osobnego, kontrolowanego etapu.
 
+## Instalator dla istniejącego VPS
+
+Instalator `deploy/install-vps.sh` jest przeznaczony dla ustalonego serwera **irr-vps** i jego istniejącego projektu `/srv/irr/app`. Wykonuje kontrolę projektu i usługi Docker Compose, pobiera **publiczny** obraz GHCR, instaluje pliki aktualizatora i aktywuje timer, ale nie restartuje produkcyjnego kontenera podczas instalacji.
+
+Na VPS (jako `debian`) najpierw pobierz skrypt z przypiętej wersji repozytorium i sprawdź go przed uruchomieniem. **Nie należy wklejać do terminala niezweryfikowanego skryptu z przypadkowej gałęzi.**
+
+```bash
+cd ~
+curl -fsSLo irr-install-vps.sh https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/deploy/install-vps.sh
+bash -n irr-install-vps.sh
+sudo bash irr-install-vps.sh
+```
+
+Instalator przerwie się bez restartu, jeśli zastany projekt Compose, etykiety kontenera lub GHCR są niezgodne. Przy pomyślnej instalacji, przyszłe uruchomienia timera mogą samodzielnie wdrażać obrazy w wykrytych oknach wolnych od nagrywania. Dokładny moment nie jest gwarantowany, ponieważ kontrola i restart nie są atomowe; zobacz ryzyko opisane poniżej.
+
 ## 1. Publikowanie obrazów
 
 - `.github/workflows/ci.yml`: kontrola kodu Python, testów i budowy Docker.
