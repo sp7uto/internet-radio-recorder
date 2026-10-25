@@ -1,0 +1,5 @@
+# Nakladka GHCR dodawana NA KONCU istniejacego zestawu Compose.
+# Nie zmienia portow, nazw i wolumenow.
+services:
+  radio-recorder:
+    image: ghcr.io/sp7uto/internet-radio-recorder:stable

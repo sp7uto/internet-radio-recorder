@@ -1,0 +1,11 @@
+[Unit]
+Description=Check stable IRR image twice per hour
+
+[Timer]
+OnCalendar=*-*-* *:00,30:00
+Persistent=true
+RandomizedDelaySec=60
+Unit=irr-docker-update.service
+
+[Install]
+WantedBy=timers.target

@@ -2,7 +2,21 @@
 
 Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 
-## [2.2.0] — 2026-09-09
+## [2.2.1] — 2026-09-15
+
+### Naprawiono
+- przed nagrywaniem FFprobe wykrywa format strumienia; wyjście MP3 lub AAC jest wybierane bez transkodowania,
+- stacje importowane lub zapisane bez testu strumienia nie korzystają z nieaktualnego domyślnego formatu AAC,
+- brakujące i puste nagrania są zgłaszane jako błędy,
+- historia wykonań zawiera polecenie FFmpeg, kod zakończenia oraz wybrany format.
+
+### Dodano
+- opcjonalne powiadomienia o zakończonym nagraniu przez `NOTIFY_ON_COMPLETE=true`.
+
+### Zgodność
+- bez zmian w formacie `stations.json`, portach i montowanych wolumenach.
+
+## [2.2.0] — 2026-09-14
 
 ### Architektura
 - zastąpiono `BaseHTTPRequestHandler` aplikacją Flask i routingiem opartym na dekoratorach,

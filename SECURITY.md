@@ -2,7 +2,7 @@
 
 ## Panel WWW
 
-Internet Radio Recorder 2.2.0 nie implementuje własnego logowania ani zarządzania użytkownikami. Każda osoba mająca dostęp do portu WWW może m.in. zmieniać stacje i harmonogram, uruchamiać nagrania, importować konfigurację oraz usuwać pliki z biblioteki.
+Internet Radio Recorder 2.2.1 nie implementuje własnego logowania ani zarządzania użytkownikami. Każda osoba mająca dostęp do portu WWW może m.in. zmieniać stacje i harmonogram, uruchamiać nagrania, importować konfigurację oraz usuwać pliki z biblioteki.
 
 **Nie wystawiaj portu 8080 bezpośrednio do publicznego Internetu.**
 
@@ -23,3 +23,7 @@ Ustaw długi, losowy `CALENDAR_TOKEN`. Traktuj pełny URL z tokenem jak sekret. 
 ## Zgłaszanie problemów
 
 Jeżeli odkryjesz podatność, nie publikuj danych dostępowych, prywatnych adresów strumieni ani tokenów w publicznym issue. Do czasu ustalenia kanału prywatnych zgłoszeń najlepiej opisać problem bez sekretów i bez gotowego exploita.
+
+## Obrazy i automatyczne aktualizacje
+
+Do automatycznego wdrażania dopuszczaj jedynie sprawdzone obrazy z zaufanego repozytorium GHCR. Samo opublikowanie obrazu nie włącza aktualizatora na serwerze. Szczegóły w [docs/AUTOMATIC_UPDATES.md](docs/AUTOMATIC_UPDATES.md). Przed pierwszym wdrożeniem zweryfikuj uprawnienia GHCR, ścieżki Compose, kopie zapasowe i czas najbliższego nagrania.

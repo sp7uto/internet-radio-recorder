@@ -41,3 +41,11 @@ Sprawdź:
 - zakładkę Historia i `stop_reason`,
 - logi kontenera,
 - wynik Test streamu.
+
+## Nagrania MP3 pojawiają się jako puste AAC
+
+Problem opisany w zgłoszeniu [#1](https://github.com/sp7uto/internet-radio-recorder/issues/1) został objęty wydaniem **2.2.1**. Użyj wersji co najmniej 2.2.1, sprawdź historię wykonania i raport FFprobe. Nie naprawiaj problemu przez automatyczne przemianowanie pustych plików AAC na MP3.
+
+## Aktualizator Docker nie wdraża nowego obrazu
+
+Zobacz [Automatyczne aktualizacje](AUTOMATIC_UPDATES.md): sprawdź, czy GHCR jest osiągalny, czy kontrola harmonogramu pozwala na restart, oraz czy usługa nie jest zablokowana plikiem `HOLD`. Nigdy nie zatrzymuj ręcznie pracującego FFmpeg wyłącznie po to, aby wymusić aktualizację.
