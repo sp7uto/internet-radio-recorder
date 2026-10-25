@@ -24,6 +24,18 @@ jobs:
           bash -n deploy/irr-docker-update deploy/install-vps.sh
       - name: Build Docker image
         run: docker build -t internet-radio-recorder:ci .
+      - name: Isolated AAC HTTP and HLS AAC verification
+        timeout-minutes: 4
+        run: |
+          docker run --rm --network none \
+            --env IRR_DOCKER_AAC_HLS_TEST=1 \
+            --env PYTHONPATH=/app \
+            --mount type=bind,src="$PWD/tests",dst=/tests,readonly \
+            --tmpfs /config:rw,uid=1000,gid=1000 \
+            --tmpfs /recordings:rw,uid=1000,gid=1000 \
+            --entrypoint python3 \
+            internet-radio-recorder:ci \
+            /tests/test_recovery_aac_hls.py
       - name: Isolated end-to-end FFmpeg recovery test in container
         run: |
           docker run --rm --network none \
@@ -60,15 +72,3 @@ jobs:
             --entrypoint python3 \
             internet-radio-recorder:ci \
             /tests/test_recovery_http.py
-      - name: Isolated AAC HTTP and HLS AAC verification
-        timeout-minutes: 4
-        run: |
-          docker run --rm --network none \
-            --env IRR_DOCKER_AAC_HLS_TEST=1 \
-            --env PYTHONPATH=/app \
-            --mount type=bind,src="$PWD/tests",dst=/tests,readonly \
-            --tmpfs /config:rw,uid=1000,gid=1000 \
-            --tmpfs /recordings:rw,uid=1000,gid=1000 \
-            --entrypoint python3 \
-            internet-radio-recorder:ci \
-            /tests/test_recovery_aac_hls.py
