@@ -65,6 +65,20 @@ class RecoveryPartsTests(unittest.TestCase):
                                          "Test", self.slot)
                 self.assertNotIn("-n", cmd)
 
+    def test_hls_disables_reconnect_at_eof_only_for_m3u8(self):
+        with TemporaryDirectory() as directory:
+            with patch.object(recorder, "PRESERVE_RECOVERY_PARTS", True):
+                ordinary = recorder.build_cmd(
+                    self.station, Path(directory), "Test", self.slot)
+                hls = recorder.build_cmd(
+                    dict(self.station, url="https://example.invalid/live.m3u8?token=1",
+                         codec="aac"),
+                    Path(directory), "Test", self.slot)
+                self.assertIn("-reconnect_at_eof", ordinary)
+                self.assertNotIn("-reconnect_at_eof", hls)
+                self.assertIn("-reconnect", hls)
+                self.assertIn("-n", hls)
+
     def test_segmented_mode_is_unchanged(self):
         with TemporaryDirectory() as directory:
             st = dict(self.station, one_file_per_program=False)
