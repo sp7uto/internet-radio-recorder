@@ -48,3 +48,15 @@ jobs:
             --entrypoint python3 \
             internet-radio-recorder:ci \
             /tests/test_recovery_container.py
+      - name: Sustained recording and actual HTTP drop test
+        timeout-minutes: 4
+        run: |
+          docker run --rm --network none \
+            --env IRR_DOCKER_NETWORK_TEST=1 \
+            --env PYTHONPATH=/app \
+            --mount type=bind,src="$PWD/tests",dst=/tests,readonly \
+            --tmpfs /config:rw,uid=1000,gid=1000 \
+            --tmpfs /recordings:rw,uid=1000,gid=1000 \
+            --entrypoint python3 \
+            internet-radio-recorder:ci \
+            /tests/test_recovery_http.py
