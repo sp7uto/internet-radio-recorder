@@ -56,7 +56,7 @@ class DockerProcessChecks(unittest.TestCase):
         data = sample()
         def fake_run(argv, **_kwargs):
             if argv[1] == "inspect":
-                return SimpleNamespace(returncode=0, stdout="true\\n", stderr="")
+                return SimpleNamespace(returncode=0, stdout="true\n", stderr="")
             if argv[-1] == guard.FFMPEG_SCAN:
                 return SimpleNamespace(returncode=0, stdout=process_output, stderr="")
             if argv[-1] == guard.FETCH_JSON:
@@ -69,10 +69,10 @@ class DockerProcessChecks(unittest.TestCase):
         compile(guard.FFMPEG_SCAN, "<FFMPEG_SCAN>", "exec")
 
     def test_idle_allows(self):
-        self.assertEqual(self._run_guard("FFMPEG_IDLE\\n"), 0)
+        self.assertEqual(self._run_guard("FFMPEG_IDLE\n"), 0)
 
     def test_active_deferred(self):
-        self.assertEqual(self._run_guard("FFMPEG_ACTIVE\\n"), 1)
+        self.assertEqual(self._run_guard("FFMPEG_ACTIVE\n"), 1)
 
     def test_unexpected_scan_output_deferred(self):
         self.assertEqual(self._run_guard(""), 1)
