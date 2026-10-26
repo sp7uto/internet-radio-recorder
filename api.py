@@ -24,7 +24,7 @@ def calendar_text(stations, recurring=True):
     today = dt.datetime.now()
     monday = (today - dt.timedelta(days=today.weekday())).date()
     lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
-             "PRODID:-//Internet Radio Recorder//2.2.0//PL", "X-WR-CALNAME:Internet Radio Recorder"]
+             "PRODID:-//Internet Radio Recorder//2.2.2//PL", "X-WR-CALNAME:Internet Radio Recorder"]
     for station in stations:
         if not station.get("enabled", True):
             continue
