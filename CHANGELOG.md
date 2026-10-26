@@ -5,6 +5,7 @@ Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 ## Infrastruktura i dokumentacja — 2026-10-26 (bez zmiany wersji aplikacji)
 
 - uporządkowano dokumentację, usunięto nieaktualne instrukcje i powtórzenia w README,
+- zaktualizowano oznaczenie wersji na sześciu historycznych zrzutach ekranu na `v2.2.1`, zapisano je w prawdziwym formacie PNG i poprawiono podpisy Kalendarz/Stacje w README,
 - uruchomiono automatyczne publikowanie stabilnych obrazów Docker do publicznego GHCR,
 - wdrożono na `irr-vps` usługę i timer `systemd` kontrolujące aktualizacje w oknie bez nagrywania,
 - naprawiono sprawdzanie procesów FFmpeg: w miejsce niedziałającego `docker top ... -eo args` używany jest odczyt `/proc` wewnątrz kontenera; weryfikacja w CI,
