@@ -21,6 +21,33 @@ with urllib.request.urlopen('http://127.0.0.1:%d/api/data' % port, timeout=7) as
 print(json.dumps(data, ensure_ascii=False))
 """
 
+# Execute inside the recorder container, avoiding host-specific docker top/ps options.
+# Treat unreadable /proc as an error; the updater must fail closed.
+FFMPEG_SCAN = """
+import os
+from pathlib import Path
+
+root = Path('/proc')
+if not root.is_dir():
+    raise SystemExit('PROC_UNAVAILABLE')
+for entry in root.iterdir():
+    if not entry.name.isdigit():
+        continue
+    try:
+        data = (entry / 'cmdline').read_bytes()
+    except (FileNotFoundError, ProcessLookupError):
+        continue  # Process exited during the scan.
+    except PermissionError:
+        raise SystemExit('PROC_PERMISSION_DENIED')
+    if not data:
+        continue
+    command = os.path.basename(data.split(bytes([0]), 1)[0].decode('utf-8', 'replace'))
+    if command == 'ffmpeg':
+        print('FFMPEG_ACTIVE')
+        raise SystemExit(0)
+print('FFMPEG_IDLE')
+"""
+
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 
@@ -100,7 +127,7 @@ def main():
         return 1
     for command, error in [
         (["docker", "inspect", "-f", "{{.State.Running}}", CONTAINER], "Kontener niedostepny"),
-        (["docker", "top", CONTAINER, "-eo", "args"], "Nie mozna sprawdzic FFmpeg"),
+        (["docker", "exec", CONTAINER, "python3", "-c", FFMPEG_SCAN], "Nie mozna sprawdzic FFmpeg"),
         (["docker", "exec", CONTAINER, "python3", "-c", FETCH_JSON], "API /api/data nie odpowiada"),
     ]:
         proc = subprocess.run(command, capture_output=True, text=True, timeout=18)
@@ -110,10 +137,11 @@ def main():
         if command[1] == "inspect" and proc.stdout.strip() != "true":
             print("IRR UPDATE DEFERRED: kontener nie dziala")
             return 1
-        if command[1] == "top" and any("ffmpeg " in line or line.strip() == "ffmpeg" for line in proc.stdout.splitlines()[1:]):
-            print("IRR UPDATE DEFERRED: trwa proces FFmpeg")
-            return 1
-        if command[1] == "exec":
+        if command[1] == "exec" and command[-1] == FFMPEG_SCAN:
+            if proc.stdout.strip() != "FFMPEG_IDLE":
+                print("IRR UPDATE DEFERRED: trwa proces FFmpeg lub nieznany wynik kontroli")
+                return 1
+        if command[-1] == FETCH_JSON:
             data = json.loads(proc.stdout)
             allowed, reason = check(data, datetime.now(timezone.utc))
             print(("IRR UPDATE ALLOWED: " if allowed else "IRR UPDATE DEFERRED: ") + reason)
