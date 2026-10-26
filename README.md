@@ -1,157 +1,128 @@
-# Internet Radio Recorder
+<p align="center">
+  <img src="static/favicon.svg" width="80" height="80" alt="Internet Radio Recorder logo">
+</p>
 
-Self-hosted Internet radio recorder with a web interface, weekly schedules, stream monitoring, recording library, ICS calendar support, configuration backup/merge, and Docker/Synology deployment.
+<h1 align="center">Internet Radio Recorder</h1>
 
-Internet Radio Recorder was created as a simple way to record selected Internet radio programmes automatically on a NAS or home server without maintaining cron jobs or running a full broadcast automation stack.
+<p align="center">
+  <strong>Schedule it. Record it. Keep it.</strong><br>
+  Self-hosted Internet radio recording for your NAS or home server.
+</p>
 
-Current release: **v2.2.2**
+<p align="center">
+  <a href="https://github.com/sp7uto/internet-radio-recorder/actions/workflows/ci.yml"><img src="https://github.com/sp7uto/internet-radio-recorder/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <a href="https://github.com/sp7uto/internet-radio-recorder/releases/latest"><img src="https://img.shields.io/github/v/release/sp7uto/internet-radio-recorder?label=release" alt="Latest release"></a>
+  <a href="https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder"><img src="https://img.shields.io/badge/container-GHCR-2496ED?logo=docker&logoColor=white" alt="Docker image on GHCR"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/sp7uto/internet-radio-recorder" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#screenshots">Screenshots</a> ·
+  <a href="#documentation">Documentation</a> ·
+  <a href="#security">Security</a>
+</p>
+
+<p align="center">
+  <a href="docs/screenshots/IRR01.png"><img src="docs/screenshots/IRR01.png" alt="Internet Radio Recorder — Today view and scheduled recordings" width="900"></a>
+</p>
+
+<p align="center"><sub>Today view — illustrative historical capture (version label updated to v2.2.1), not a live screenshot of v2.2.2.</sub></p>
+
+## Why Internet Radio Recorder?
+
+Choose programmes, set a weekly schedule, and let IRR record them to your own storage. Manage everything in a browser — without maintaining individual cron jobs or deploying a full broadcast automation stack. Designed for Docker-based home servers and NAS installations.
+
+**Current stable version: [v2.2.2](https://github.com/sp7uto/internet-radio-recorder/releases/tag/v2.2.2).** New in this release: [atomic coordination between recording and the optional VPS updater](RELEASE_NOTES_v2.2.2.md).
 
 ## Features
 
-* multiple Internet radio stations,
-* weekly recording schedules,
-* programme titles,
-* configurable `pre` / `post` recording margins,
-* one file per programme,
-* correct handling of adjacent programmes,
-* support for programmes crossing midnight,
-* recording without re-encoding using `ffmpeg -c:a copy`,
-* manual `REC` / `STOP`,
-* per-station retention limits,
-* per-station storage limits,
-* Today view,
-* Calendar view,
-* History,
-* Stream monitoring,
-* Recording Library,
-* Statistics,
-* stream availability testing,
-* codec and bitrate diagnostics,
-* optional NTFY notifications,
-* optional webhook notifications,
-* optional notifications after successful recordings,
-* automatic MP3/AAC output selection when recording starts,
-* detection of empty or missing recording files,
-* ICS calendar subscription,
-* configuration backup,
-* safe configuration import / merge,
-* station reordering using drag-and-drop or `↑` / `↓`,
-* Docker Compose deployment,
-* Synology / Portainer configuration example.
+| Area | What you get |
+| --- | --- |
+| **Recording** | Multiple Internet radio stations; MP3/AAC selection via FFprobe; stream copy without transcoding (`ffmpeg -c:a copy`); one file per programme; manual **REC / STOP** |
+| **Scheduling** | Weekly timetables, programme titles, `pre` / `post` margins, adjacent programmes and midnight-crossing schedules |
+| **Web dashboard** | **Today**, **Calendar**, **History**, **Stream Status**, **Recording Library**, **Statistics**; station ordering by drag-and-drop or arrows |
+| **Monitoring** | Stream availability tests, codec and bitrate diagnostics, detection of missing or empty output files |
+| **Storage & configuration** | Per-station retention and storage limits; configuration backup, safe import/merge and full restore |
+| **Integrations** | ICS calendar subscription; optional NTFY and webhook alerts, including recording-completion notifications |
+| **Deployment** | Docker Compose, Synology/Portainer example and public GHCR images; optional guarded Docker auto-updates on the reference VPS |
 
 <!-- SCREENSHOTS_START -->
 
 ## Screenshots
 
-The images below are historical captures with their displayed version label updated to
-`v2.2.1`; they illustrate the interface and earlier example data rather than a
-fresh capture of the running production server.
+These six images are **historical example captures**, with their displayed title
+updated to **v2.2.1**. They illustrate the interface and sample data, not a fresh
+capture from the v2.2.2 production deployment. Click to see the full image.
 
-### Today — Scheduled Recordings
-
-![Today — Scheduled Recordings](docs/screenshots/IRR01.png)
-
-### Calendar
-
-![Calendar](docs/screenshots/IRR03.png)
-
-### Stations
-
-![Stations](docs/screenshots/IRR02.png)
-
-### Stream Status
-
-![Stream Status](docs/screenshots/IRR04.png)
-
-### Recording Library
-
-![Recording Library](docs/screenshots/IRR05.png)
-
-### Statistics
-
-![Statistics](docs/screenshots/IRR06.png)
+| | |
+| :---: | :---: |
+| **Today — scheduled recordings** | **Calendar** |
+| [<img src="docs/screenshots/IRR01.png" alt="Today — scheduled recordings" width="420">](docs/screenshots/IRR01.png) | [<img src="docs/screenshots/IRR03.png" alt="Calendar view" width="420">](docs/screenshots/IRR03.png) |
+| **Stations** | **Stream status** |
+| [<img src="docs/screenshots/IRR02.png" alt="Station management" width="420">](docs/screenshots/IRR02.png) | [<img src="docs/screenshots/IRR04.png" alt="Stream status and diagnostics" width="420">](docs/screenshots/IRR04.png) |
+| **Recording library** | **Statistics** |
+| [<img src="docs/screenshots/IRR05.png" alt="Recording library" width="420">](docs/screenshots/IRR05.png) | [<img src="docs/screenshots/IRR06.png" alt="Recording statistics" width="420">](docs/screenshots/IRR06.png) |
 
 <!-- SCREENSHOTS_END -->
 
 ## Quick Start
 
-Requirements:
+**Requirements:** Docker and Docker Compose v2.
 
-* Docker
-* Docker Compose v2
+1. Clone the repository:
 
-Clone the repository:
+   ```bash
+   git clone https://github.com/sp7uto/internet-radio-recorder.git
+   cd internet-radio-recorder
+   ```
 
-```bash
-git clone https://github.com/sp7uto/internet-radio-recorder.git
-cd internet-radio-recorder
-```
+2. Create local configuration files:
 
-Create your local configuration:
+   ```bash
+   cp .env.example .env
+   cp config/stations.example.json config/stations.json
+   ```
 
-```bash
-cp .env.example .env
-cp config/stations.example.json config/stations.json
-```
+3. Edit `.env` and **change `CALENDAR_TOKEN`** before starting.
+4. Build and start the container:
 
-Edit `.env` and at minimum change:
+   ```bash
+   docker compose up -d --build
+   ```
 
-```text
-CALENDAR_TOKEN
-```
+5. Open `http://server-address:8080` on your trusted network.
 
-Then start the application:
+| Path | Purpose |
+| --- | --- |
+| `./recordings` | Audio files |
+| `./config` | Stations and application configuration |
 
-```bash
-docker compose up -d --build
-```
+> [!WARNING]
+> **The administration panel has no built-in authentication.** Do not expose
+> port `8080` directly to the public Internet. See [Security](#security)
+> before enabling remote access.
 
-The web interface is available by default at:
-
-```text
-http://server-address:8080
-```
-
-Recordings are stored in:
-
-```text
-./recordings
-```
-
-Application configuration is stored in:
-
-```text
-./config
-```
+For installation options, upgrades and permissions, see
+[Installation and upgrades](docs/INSTALLATION.md).
 
 ## Synology / Portainer
 
-A separate example configuration is included:
-
-```text
-docker-compose-portainer.yml
-```
-
-Example Synology paths:
+An example stack is provided in [`docker-compose-portainer.yml`](docker-compose-portainer.yml).
+Example Synology paths (adapt to your own NAS):
 
 ```text
 /volume1/docker/internet-radio-recorder/config
 /volume1/docker/radio
 ```
 
-See:
-
-```text
-docs/INSTALLATION.md
-```
-
-for detailed installation and upgrade instructions.
+This is **an example, not a production configuration**. See the
+[installation guide](docs/INSTALLATION.md) before deploying.
 
 ## Scheduling
 
-Each station can contain multiple schedule entries for every day of the week.
-
-Example:
+Each station may have multiple entries for each day of the week:
 
 ```json
 {
@@ -163,163 +134,104 @@ Example:
 }
 ```
 
-`pre` and `post` specify recording margins in minutes before and after the scheduled programme.
+`pre` and `post` are recording margins in minutes. Programmes crossing
+midnight are supported. With **one file per programme**, the nominal start
+of the next programme takes priority over overlapping recording margins.
 
-Programmes crossing midnight are supported.
-
-When **one file per programme** is enabled, the nominal start of the next scheduled programme takes priority over overlapping recording margins.
-
-More information:
-
-```text
-docs/SCHEDULING.md
-```
+See [Scheduling](docs/SCHEDULING.md).
 
 ## Backup and Import
 
-The web interface provides several configuration management options.
+| Action in the web UI | Effect |
+| --- | --- |
+| **Backup** | Download the current `stations.json` |
+| **Import / Merge** | Keep existing stations and schedules; add non-conflicting entries |
+| **Restore Backup** | Replace the complete configuration |
 
-**Backup**
+Before importing, IRR creates a timestamped backup:
+`stations.before-import-YYYYMMDD-HHMMSS.json`.
 
-Downloads the current `stations.json`.
-
-**Import / Merge**
-
-Keeps existing stations and schedules while adding new, non-conflicting entries.
-
-**Restore Backup**
-
-Replaces the complete configuration.
-
-Before an import operation, Internet Radio Recorder automatically creates a timestamped backup:
-
-```text
-stations.before-import-YYYYMMDD-HHMMSS.json
-```
-
-More information:
-
-```text
-docs/BACKUP_AND_MERGE.md
-```
+See [Backup and import/merge](docs/BACKUP_AND_MERGE.md).
 
 ## ICS Calendar
 
-The recording schedule can be subscribed to as an ICS calendar.
-
-Example:
+Subscribe to the recording schedule using:
 
 ```text
 http://server-address:8080/calendar.ics?token=YOUR_TOKEN
 ```
 
-The access token is configured using:
-
-```text
-CALENDAR_TOKEN
-```
+The access token is configured via `CALENDAR_TOKEN`.
 
 ## Notifications
 
-Optional notifications can be sent using:
-
-* NTFY,
-* webhook endpoints.
-
-Set `NOTIFY_ON_COMPLETE=true` to send a notification after each successful
-recording. Empty or missing output files always generate an error notification
-when NTFY or a webhook is configured.
-
-These can be used to report recording events and application status.
+Optional **NTFY** and **webhook** notifications can report recording events
+and application status. Set `NOTIFY_ON_COMPLETE=true` to be notified
+after each successful recording. Missing or empty output files generate
+an error notification when a notification destination is configured.
 
 ## Security
 
-The web administration panel **does not provide built-in authentication**.
+**The administration panel does not provide built-in authentication.**
+Anyone able to reach it may be able to change station settings, start or
+stop recordings, or delete files from the library.
 
-Anyone with access to the web interface may be able to:
-
-* modify station configuration,
-* start or stop recordings,
-* delete recordings from the library.
-
-Do **not** expose port `8080` directly to the public Internet.
-
-Recommended remote access methods:
-
-* Tailscale,
-* VPN,
-* reverse proxy with HTTPS and authentication.
-
-See:
-
-```text
-SECURITY.md
-```
+**Never expose port `8080` directly to the public Internet.** For remote
+access, use **Tailscale**, another VPN, or a reverse proxy with HTTPS and
+authentication. Read [SECURITY.md](SECURITY.md) before deploying.
 
 ## Documentation
 
-* [Installation and upgrades](docs/INSTALLATION.md)
-* [Configuration](docs/CONFIGURATION.md)
-* [Scheduling](docs/SCHEDULING.md)
-* [Backup and import/merge](docs/BACKUP_AND_MERGE.md)
-* [API and endpoints](docs/API.md)
-* [Troubleshooting](docs/TROUBLESHOOTING.md)
-* [Automatic Docker updates (GHCR / VPS)](docs/AUTOMATIC_UPDATES.md)
-* [Atomic maintenance gate (v2.2.2)](docs/ATOMIC_MAINTENANCE.md)
-* [GitHub release and package publishing](docs/GITHUB_PUBLISHING.md)
-* [Security](SECURITY.md)
-* [Changelog](CHANGELOG.md)
+| Getting started | Reference & operations |
+| --- | --- |
+| [Installation and upgrades](docs/INSTALLATION.md) | [API and endpoints](docs/API.md) |
+| [Configuration](docs/CONFIGURATION.md) | [Troubleshooting](docs/TROUBLESHOOTING.md) |
+| [Scheduling](docs/SCHEDULING.md) | [Automatic Docker updates (GHCR / VPS)](docs/AUTOMATIC_UPDATES.md) |
+| [Backup and import/merge](docs/BACKUP_AND_MERGE.md) | [Atomic maintenance gate (v2.2.2)](docs/ATOMIC_MAINTENANCE.md) |
+| [Security](SECURITY.md) | [GitHub publishing](docs/GITHUB_PUBLISHING.md) |
+| [Changelog](CHANGELOG.md) | [Release notes v2.2.2](RELEASE_NOTES_v2.2.2.md) |
 
 ## Technical Details
 
-The Docker image is based on:
+The Docker image is based on `debian:bookworm-slim` and includes
+**Python 3, FFmpeg and FFprobe**. The container runs as **UID 1000**;
+mounted `/config` and `/recordings` directories must be writable by that user.
 
-```text
-debian:bookworm-slim
-```
+## Latest Release & Docker Delivery
 
-It includes:
+**Stable: [v2.2.2](https://github.com/sp7uto/internet-radio-recorder/releases/tag/v2.2.2).**
+This release adds an atomic maintenance gate coordinating recorder workers
+with the optional VPS Docker updater. It also includes the MP3/AAC and
+recording diagnostics improvements from v2.2.1.
 
-* Python 3,
-* FFmpeg,
-* FFprobe.
+Versioned and stable images are published to
+[GHCR](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder),
+including `ghcr.io/sp7uto/internet-radio-recorder:stable`.
 
-The container runs as UID:
+<details>
+<summary>Verified production deployment (reference irr-vps)</summary>
 
-```text
-1000
-```
+The optional updater on `irr-vps` completed its first guarded automatic Docker
+update (v2.2.1) on **2026-10-26 at 01:30 CET**. On
+**2026-10-26 at 03:01:21 CET**, its timer automatically deployed v2.2.2:
+the service journal confirmed an exclusive maintenance lock, successful
+container recreation and `flock-v1` in the running recorder. The prior
+image was retained for rollback.
 
-Mounted `/config` and `/recordings` directories must therefore be writable by that user.
+This automation is **specific to the reference VPS**; a normal
+Docker Compose installation does not automatically install the timer.
+See [Automatic updates](docs/AUTOMATIC_UPDATES.md) for its prerequisites,
+safety limitations and rollback.
 
-## Latest Release
+</details>
 
-Current stable release: **v2.2.2**. This release adds an atomic maintenance gate coordinating recording workers and the VPS Docker updater; MP3/AAC correctness improvements from v2.2.1 remain included. See [v2.2.2 release notes](RELEASE_NOTES_v2.2.2.md).
-
-**Automated Docker delivery:** stable images are published to the [public GHCR package](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) as `ghcr.io/sp7uto/internet-radio-recorder:stable` and with versioned tags (current stable release: `v2.2.2`). The reference `irr-vps` completed its first guarded automatic Docker update of v2.2.1 on **2026-10-26 at 01:30 CET**. On **2026-10-26 at 03:01:21 CET**, its timer automatically deployed v2.2.2 with the atomic maintenance gate: the VPS update journal confirmed an exclusive maintenance lock, a successful container recreation and the running recorder confirmed `flock-v1`. The prior Docker image was retained for rollback. This VPS-specific automation is optional; a normal Docker Compose installation does not install the timer. See [Automatic updates](docs/AUTOMATIC_UPDATES.md) for status, safety limits, troubleshooting and rollback.
-
-## Contributing
+## Contributing & Feedback
 
 Bug reports, feature requests and pull requests are welcome.
-
-Please see:
-
-```text
-CONTRIBUTING.md
-```
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) and open a
+[GitHub Issue](https://github.com/sp7uto/internet-radio-recorder/issues).
 
 ## License
 
-Internet Radio Recorder is released under the **MIT License**.
-
-See:
-
-```text
-LICENSE
-```
-
-## Feedback
-
-If you already record Internet radio or podcasts on a home server, feedback is especially welcome.
-
-Ideas, bug reports and suggestions can be submitted through GitHub Issues.
+Internet Radio Recorder is released under the
+[MIT License](LICENSE).
