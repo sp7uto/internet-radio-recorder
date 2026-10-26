@@ -43,17 +43,21 @@ Current release: **v2.2.1**
 
 ## Screenshots
 
+The images below are historical captures with their displayed version label updated to
+`v2.2.1`; they illustrate the interface and earlier example data rather than a
+fresh capture of the running production server.
+
 ### Today — Scheduled Recordings
 
 ![Today — Scheduled Recordings](docs/screenshots/IRR01.png)
 
 ### Calendar
 
-![Calendar](docs/screenshots/IRR02.png)
+![Calendar](docs/screenshots/IRR03.png)
 
 ### Stations
 
-![Stations](docs/screenshots/IRR03.png)
+![Stations](docs/screenshots/IRR02.png)
 
 ### Stream Status
 
