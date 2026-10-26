@@ -93,7 +93,7 @@ button{padding:8px 12px;margin:4px;border:0;border-radius:7px;cursor:pointer}
   <div class="stat"><span class="muted">Zajęte miejsce</span><b id="stSize">—</b></div>
   <div class="stat"><span class="muted">Wolne na wolumenie</span><b id="stFree">—</b></div>
   <div class="diskbar">
-    <div class="storage-head"><span>Zajętość wolumenu Synology</span><span id="diskText">—</span></div>
+    <div class="storage-head"><span>Zajętość wolumenu</span><span id="diskText">—</span></div>
     <div class="storage-bar"><div class="storage-fill" id="diskFill" style="width:0%"></div></div>
   </div>
 </div>
