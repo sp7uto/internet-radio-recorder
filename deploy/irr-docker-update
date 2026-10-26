@@ -34,6 +34,12 @@ container_service="$(docker inspect -f '{{index .Config.Labels "com.docker.compo
 compose_project="$(compose config --format json | python3 -c 'import json,sys; print(json.load(sys.stdin).get("name", ""))')" || fail "Nie moge odczytac projektu"
 [[ -n "$container_project" && "$container_project" == "$compose_project" && "$container_service" == "$SERVICE" ]] || fail "Niezgodny projekt/usluga Compose"
 
+# A flock only works when host and container see the same inode.
+# Never guess the mounted path or lock a different directory.
+config_mount="$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/config"}}{{.Source}}{{end}}{{end}}' "$CONTAINER")" || fail "Nie mozna znalezc /config"
+[[ -n "$config_mount" && -d "$config_mount" && -d "$ROOT/config" ]] || fail "Brak bind mount /config"
+[[ "$(readlink -f "$config_mount")" == "$(readlink -f "$ROOT/config")" ]] || fail "Niezgodny mount /config z $ROOT/config"
+
 log "Pobieram $IMAGE bez zatrzymywania nagran"
 docker pull "$IMAGE" || fail "GHCR: pobranie nie powiodlo sie"
 new_id="$(docker image inspect -f '{{.Id}}' "$IMAGE")" || fail "Brak obrazu"
@@ -43,9 +49,22 @@ if [[ "$new_id" == "$old_id" ]]; then
 fi
 
 IRR_CONTAINER="$CONTAINER" python3 "$GUARD" || { log "Odroczono"; exit 0; }
+
+# The exclusive lock remains held until success, rollback, or exit.
+# New recorders hold a shared lock while probing/recording, so it is
+# impossible to acquire this lock between their test and FFmpeg startup.
+gate="$config_mount/.irr-maintenance.lock"
+[[ ! -L "$gate" ]] || fail "Plik blokady nie moze byc symlinkiem"
+(umask 022; : >> "$gate") || fail "Nie moge przygotowac blokady"
+exec 8< "$gate" || fail "Nie moge otworzyc blokady"
+flock -n -x 8 || { log "Odroczono: trwa FFmpeg/FFprobe albo inna operacja na bramce serwisowej"; exit 0; }
+log "Atomowa blokada serwisowa zalozona"
+
+# For the first transition from v2.2.1 the old recorder does not
+# participate in flock; the second legacy guard remains mandatory.
+IRR_CONTAINER="$CONTAINER" python3 "$GUARD" || { log "Odroczono po zalozeniu blokady"; exit 0; }
 rollback_tag="irr-rollback:$(date -u +%Y%m%d-%H%M%S)"
 docker image tag "$old_id" "$rollback_tag" || fail "Nie moge zachowac obrazu poprzedniego"
-IRR_CONTAINER="$CONTAINER" python3 "$GUARD" || { log "Odroczono po ponownej kontroli"; exit 0; }
 
 log "Wdrazam nowa wersje"
 upgrade_ok=1
@@ -66,8 +85,8 @@ for endpoint in ("/api/data", "/api/overview"):
 }
 if [[ "$upgrade_ok" == 1 ]]; then
   for i in $(seq 1 10); do
-    if healthcheck; then
-      log "SUKCES: $new_id; obraz awaryjny: $rollback_tag"
+    if healthcheck && docker exec "$CONTAINER" python3 -c 'from maintenance_gate import RECORDING_GATE_VERSION; assert RECORDING_GATE_VERSION == "flock-v1"' >/dev/null 2>&1; then
+      log "SUKCES: $new_id; atomowa blokada serwisowa aktywna; obraz awaryjny: $rollback_tag"
       exit 0
     fi
     sleep 3

@@ -265,6 +265,7 @@ SECURITY.md
 * [API and endpoints](docs/API.md)
 * [Troubleshooting](docs/TROUBLESHOOTING.md)
 * [Automatic Docker updates (GHCR / VPS)](docs/AUTOMATIC_UPDATES.md)
+* [Atomic maintenance gate (staged for the next release)](docs/ATOMIC_MAINTENANCE.md)
 * [GitHub release and package publishing](docs/GITHUB_PUBLISHING.md)
 * [Security](SECURITY.md)
 * [Changelog](CHANGELOG.md)
