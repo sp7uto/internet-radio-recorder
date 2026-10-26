@@ -29,6 +29,12 @@ Zarejestrowany identyfikator obrazu: `sha256:54a13eb676dce6e4e40a9f72a4a9d920c39
 
 Ten zapis dokumentuje konkretny test na VPS; **nie jest gwarancją**, że przyszłe aktualizacje będą trwały tyle samo albo że start nowej audycji nie zbiegnie się z restartem.
 
+## Atomowa blokada serwisowa — status wdrożenia
+
+Kod nowej blokady serwisowej jest przygotowany w repozytorium dla **przyszłego wydania**. Nie działa jeszcze w opublikowanym obrazie `v2.2.1`. Po wdrożeniu obu części (hostowy aktualizator + rejestrator w nowym obrazie) `flock` na wspólnym pliku `/config/.irr-maintenance.lock` wyeliminuje wyścig pomiędzy uruchomieniem FFmpeg a przyznaniem aktualizatorowi wyłączności. Podczas pierwszej zmiany z `v2.2.1` nadal potrzebna jest podwójna kontrola starego rejestratora.
+
+**Nie należy utożsamiać wdrożenia kodu na `main` z włączeniem tej funkcji na VPS.** Wymagana kolejność i ograniczenia: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
+
 ## GitHub Actions i publikowanie obrazów
 
 - `.github/workflows/ci.yml` — testy Pythona, aktualizatora, składni powłoki i budowy Dockera.
