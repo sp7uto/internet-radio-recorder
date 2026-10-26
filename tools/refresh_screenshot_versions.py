@@ -41,8 +41,8 @@ def update(path: Path) -> None:
     font = ImageFont.truetype(font_path, 24)
 
     # Leave a visible space after "Recorder" on every screenshot.
-    # Match the original heading's white text; use a 4x transparent layer for
-    # antialiased rendering without touching any other screenshot region.
+    # Match the original heading's white text; limit the drawing to the
+    # top-bar area so the historical UI and sample data stay untouched.
     drawing.text((292, -1), TARGET_VERSION, font=font, fill=(237, 239, 243))
     rgb.save(path, format="PNG", optimize=True)
     with Image.open(path) as result:
