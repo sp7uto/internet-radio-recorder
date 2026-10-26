@@ -1,0 +1,60 @@
+name: Publish Wiki
+
+# Publishing is isolated from the IRR application and Docker workflows.
+# The repository Wiki must be initialized once in GitHub's web UI.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'wiki/**'
+      - '.github/workflows/publish-wiki.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: irr-publish-wiki
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Sync documentation to GitHub Wiki
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Wiki source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Publish Markdown pages without deleting other Wiki content
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          # GitHub creates this separate repository only after someone saves
+          # the first page in the Wiki UI. Never force-initialize or force-push.
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git"
+          if ! git clone --quiet --depth 1 "$remote" "$tmp/wiki-live"; then
+            echo "::error::Wiki not initialized. Open the Wiki tab and create its first Home page."
+            exit 1
+          fi
+
+          # wiki/*.md is the source of truth. Preserve any unrelated Wiki files.
+          cp wiki/*.md "$tmp/wiki-live/"
+          git -C "$tmp/wiki-live" add -- '*.md'
+          if git -C "$tmp/wiki-live" diff --cached --quiet; then
+            echo "Wiki already matches repository source."
+            exit 0
+          fi
+
+          git -C "$tmp/wiki-live" config user.name "github-actions[bot]"
+          git -C "$tmp/wiki-live" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$tmp/wiki-live" commit -m "Sync IRR documentation from ${GITHUB_SHA:0:12}"
+          git -C "$tmp/wiki-live" push origin HEAD
+          echo "Published Wiki pages from wiki/*.md"
