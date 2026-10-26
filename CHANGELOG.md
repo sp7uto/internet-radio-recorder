@@ -2,6 +2,16 @@
 
 Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 
+## Infrastruktura i dokumentacja — 2026-10-26 (bez zmiany wersji aplikacji)
+
+- uporządkowano dokumentację, usunięto nieaktualne instrukcje i powtórzenia w README,
+- uruchomiono automatyczne publikowanie stabilnych obrazów Docker do publicznego GHCR,
+- wdrożono na `irr-vps` usługę i timer `systemd` kontrolujące aktualizacje w oknie bez nagrywania,
+- naprawiono sprawdzanie procesów FFmpeg: w miejsce niedziałającego `docker top ... -eo args` używany jest odczyt `/proc` wewnątrz kontenera; weryfikacja w CI,
+- pierwsze automatyczne wdrożenie obrazu `v2.2.1` z GHCR: **2026-10-26 01:30 CET**, status `SUCCESS`, z zachowaniem lokalnego obrazu rollback.
+
+Nie utworzono nowej wersji programu: `VERSION` nadal ma wartość `2.2.1`. Zmiany dotyczą dystrybucji, aktualizatora i dokumentacji, nie działania rejestratora.
+
 ## [2.2.1] — 2026-09-15
 
 ### Naprawiono
