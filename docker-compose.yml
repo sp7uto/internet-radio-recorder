@@ -1,7 +1,7 @@
 services:
   radio-recorder:
     build: .
-    image: internet-radio-recorder:2.2.1
+    image: internet-radio-recorder:2.2.2
     container_name: Internet-Radio-Recorder
     restart: unless-stopped
     environment:

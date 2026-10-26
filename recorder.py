@@ -247,7 +247,7 @@ def build_cmd(st,out,title,slot):
     base=["ffmpeg","-hide_banner","-nostdin","-loglevel","warning",
           "-rw_timeout","15000000","-reconnect","1","-reconnect_streamed","1",
           "-reconnect_at_eof","1","-reconnect_delay_max","10",
-          "-user_agent","Mozilla/5.0 Internet-Radio-Recorder/2.2.1",
+          "-user_agent","Mozilla/5.0 Internet-Radio-Recorder/2.2.2",
           "-i",st["url"],"-map","0:a:0","-vn","-c:a","copy"]
 
     if one:

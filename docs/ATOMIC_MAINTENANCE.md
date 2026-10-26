@@ -1,9 +1,10 @@
 # Atomowa blokada serwisowa IRR — projekt i procedura wdrożenia
 
-> **Status 26.10.2026:** implementacja i testy zapisane w kodzie repozytorium.
-> Nie oznacza to automatycznie, że funkcja działa na produkcyjnym `irr-vps`.
-> Obecnie opublikowany obraz `v2.2.1` nie ma tej blokady. Nie twórz nowego
-> wydania przed instalacją zgodnego skryptu aktualizatora na VPS.
+> **Status 26.10.2026:** funkcja została ujęta w wydaniu **v2.2.2**.
+> Na `irr-vps` nowy skrypt aktualizatora został już zainstalowany i
+> sprawdzony, ale pełne działanie atomowej blokady na produkcji wymaga
+> jeszcze **wdrożenia nowego obrazu** przez timer. Samo scalenie wydania
+> na GitHubie nie potwierdza wykonania tej operacji.
 
 ## Na czym polega gwarancja
 
@@ -62,14 +63,14 @@ harmonogramów, systemów synchronizacji ani UI.
 ## Bezpieczna kolejność aktywacji na irr-vps
 
 1. Przejrzyj PR oraz testy CI. Nie zmieniaj obrazu Docker w trakcie nagrań.
-2. Wgraj **tylko nowy** `/usr/local/sbin/irr-docker-update` na VPS,
-   wykonując kopię poprzedniej wersji; podczas podmiany zatrzymaj timer
-   i upewnij się, że usługa nie pracuje. Nie uruchamiaj updatera ręcznie.
-3. Sprawdź, czy `/config` w kontenerze jest bind mount tego samego
-   katalogu `/srv/irr/app/config`; inaczej aktualizator powinien
-   zakończyć się błędem, a blokada nie będzie poprawna.
-4. Dopiero po potwierdzeniu kroku 2 i 3 utwórz wydanie z nową wersją
-   rejestratora (planowane `v2.2.2`), aby GitHub opublikował obraz GHCR.
+2. **Wykonano na `irr-vps` 26.10.2026:** podmieniono wyłącznie
+   `/usr/local/sbin/irr-docker-update`, po zatrzymaniu timera i wykonaniu
+   kopii `irr-docker-update.bak-20261026-023441`. Timer jest znowu aktywny.
+   Nie trzeba powtarzać tej czynności.
+3. **Wykonano:** potwierdzono, że `/config` w kontenerze jest bind
+   mount dokładnie `/srv/irr/app/config`; nie zmieniano wolumenów.
+4. Utworzenie wydania **v2.2.2** uruchamia publikowanie obrazu w GHCR.
+   Należy sprawdzić zakończenie workflow i udostępnienie `:stable`.
 5. Pierwsze przejście z `v2.2.1` na nowe wydanie jest etapem bootstrap:
    stara wersja rejestratora **jeszcze nie trzyma** współdzielonych blokad.
    Aktualizator wykonuje dlatego dwukrotny guard FFmpeg/harmonogramu i
@@ -79,8 +80,9 @@ harmonogramów, systemów synchronizacji ani UI.
    `Atomowa blokada serwisowa zalozona` i
    `atomowa blokada serwisowa aktywna`.
 
-**Z uwagi na pierwszy etap przejściowy, nie wolno twierdzić, że obecnie
-działający obraz v2.2.1 zapewnia tę gwarancję.**
+**Z uwagi na etap przejściowy nie wolno twierdzić, że produkcja jest
+chroniona atomowo, dopóki nie potwierdzimy w logu aktualizatora i w
+uruchomionym kontenerze wdrożenia v2.2.2.**
 
 ## Diagnostyka wyłącznie do odczytu na irr-vps
 
@@ -89,6 +91,7 @@ systemctl is-active irr-docker-update.timer
 sudo journalctl -u irr-docker-update.service -n 80 --no-pager
 
 docker inspect -f 'Obraz: {{.Config.Image}} | Stan: {{.State.Status}}' Internet-Radio-Recorder
+docker exec Internet-Radio-Recorder python3 -c 'from maintenance_gate import RECORDING_GATE_VERSION; print(RECORDING_GATE_VERSION)'
 docker inspect -f '{{range .Mounts}}{{if eq .Destination "/config"}}CONFIG={{.Source}}{{end}}{{end}}' Internet-Radio-Recorder
 ```
 

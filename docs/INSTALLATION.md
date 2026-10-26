@@ -1,6 +1,6 @@
 # Instalacja i aktualizacja IRR
 
-Stan dokumentacji: **v2.2.1** (2026-09-15). Zakładamy Docker Compose v2.
+Stan dokumentacji: **v2.2.2** (2026-10-26). Zakładamy Docker Compose v2.
 
 ## Zwykła instalacja
 
@@ -31,13 +31,13 @@ Kontener działa z UID 1000; zapewnij mu uprawnienia do obu katalogów. Nie uży
 
 ## Synology / Portainer
 
-Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją produkcyjną. Typowe katalogi przykładowe: `/volume1/docker/internet-radio-recorder/config` oraz `/volume1/docker/radio`. Dopasuj je do swojej instalacji i ustaw obraz `internet-radio-recorder:2.2.1` dopiero po jego lokalnym zbudowaniu. Nie nadpisuj danych ani nie uruchamiaj dodatkowego rejestratora przypadkowo.
+Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją produkcyjną. Typowe katalogi przykładowe: `/volume1/docker/internet-radio-recorder/config` oraz `/volume1/docker/radio`. Dopasuj je do swojej instalacji i ustaw obraz `internet-radio-recorder:2.2.2` dopiero po jego lokalnym zbudowaniu. Nie nadpisuj danych ani nie uruchamiaj dodatkowego rejestratora przypadkowo.
 
 ## Automatyczna aktualizacja przez GHCR
 
 **Dostępne i przetestowane** dla instalacji referencyjnej `irr-vps`: publiczny obraz GHCR `ghcr.io/sp7uto/internet-radio-recorder:stable`, timer `systemd`, kontrola FFmpeg i harmonogramu oraz rollback. Pierwsze automatyczne wdrożenie zakończyło się sukcesem **26.10.2026 o 01:30 CET**. Patrz [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md).
 
-Nowa **atomowa blokada serwisowa** jest przygotowana dla następnego wydania; na VPS zacznie działać dopiero po wdrożeniu nowego aktualizatora i obrazu rejestratora: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
+**Atomowa blokada serwisowa** jest częścią wydania v2.2.2. Hostowy aktualizator na `irr-vps` jest już przygotowany; blokada zacznie działać na tym serwerze po wdrożeniu nowego obrazu rejestratora: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
 
 W zwykłej instalacji Docker Compose **timer nie jest instalowany automatycznie**. Skrypt `deploy/install-vps.sh` jest dostosowany do konkretnego układu `irr-vps`; nie uruchamiaj go na Synology/QNAP ani na innym serwerze bez weryfikacji projektu, ścieżek i usług. Samo scalenie zmian na GitHubie nie włącza aktualizatora na kolejnych serwerach.
 
