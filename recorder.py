@@ -551,6 +551,13 @@ def worker(name):
             notify("Radio Recorder: błąd nagrywania",f"{name}: {e}")
 
         finally:
+            # Do not release the shared gate while a child FFmpeg still exists.
+            # It must be terminated/reaped BEFORE removing it from procs.
+            if 'p' in locals() and p is not None and p.poll() is None:
+                stop_process(name, "shutdown")
+                if p.poll() is None:
+                    p.kill()
+                    p.wait()
             procs.pop(name,None)
             try:
                 with lock:
@@ -597,9 +604,7 @@ def worker(name):
             except Exception:
                 pass
             finally:
-                # A worker can only release its shared gate after FFmpeg exits.
-                if 'p' in locals() and p is not None and p.poll() is None:
-                    stop_process(name, "shutdown")
+                # Never remove the lock file or release it before child exit.
                 release_shared(gate_fd)
 
         # Po prawidłowym zakończeniu harmonogramu nie traktujemy tego jako reconnect.
