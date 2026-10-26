@@ -141,7 +141,7 @@ def main():
             if proc.stdout.strip() != "FFMPEG_IDLE":
                 print("IRR UPDATE DEFERRED: trwa proces FFmpeg lub nieznany wynik kontroli")
                 return 1
-        if command[1] == "exec":
+        if command[-1] == FETCH_JSON:
             data = json.loads(proc.stdout)
             allowed, reason = check(data, datetime.now(timezone.utc))
             print(("IRR UPDATE ALLOWED: " if allowed else "IRR UPDATE DEFERRED: ") + reason)
