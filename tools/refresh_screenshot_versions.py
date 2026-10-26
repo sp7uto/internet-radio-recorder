@@ -40,9 +40,10 @@ def update(path: Path) -> None:
         raise RuntimeError("Missing bold TrueType font on build runner")
     font = ImageFont.truetype(font_path, 24)
 
+    # Leave a visible space after "Recorder" on every screenshot.
     # Match the original heading's white text; use a 4x transparent layer for
     # antialiased rendering without touching any other screenshot region.
-    drawing.text((284, -1), TARGET_VERSION, font=font, fill=(237, 239, 243))
+    drawing.text((292, -1), TARGET_VERSION, font=font, fill=(237, 239, 243))
     rgb.save(path, format="PNG", optimize=True)
     with Image.open(path) as result:
         if result.format != "PNG":
