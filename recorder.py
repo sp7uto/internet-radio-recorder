@@ -1,6 +1,7 @@
 import os, json, signal, subprocess, threading, time, shutil, urllib.request, shlex
 from pathlib import Path
 from datetime import datetime, timedelta
+from maintenance_gate import acquire_shared, release_shared, RECORDING_GATE_VERSION
 
 CONFIG=os.getenv("CONFIG_FILE","/config/stations.json")
 OUT=Path(os.getenv("RECORDINGS_DIR","/recordings"))
@@ -447,9 +448,25 @@ def worker(name):
             time.sleep(2)
             continue
 
-        (out/datetime.now().strftime("%Y-%m-%d")).mkdir(parents=True,exist_ok=True)
+        # Atomically register a future FFmpeg start against VPS maintenance.
+        # Keep the shared flock for the full probe/recording/teardown interval.
+        # If the updater holds its exclusive flock, do not start FFprobe/FFmpeg.
+        try:
+            gate_fd = acquire_shared()
+        except OSError as e:
+            with lock:
+                state[name].update(status="error", last_error=f"Maintenance gate: {e}",
+                                   last_error_at=datetime.now().astimezone().isoformat())
+            time.sleep(2)
+            continue
+        if gate_fd is None:
+            with lock:
+                state[name].update(status="maintenance", started=None)
+            time.sleep(1)
+            continue
 
         try:
+            (out/datetime.now().strftime("%Y-%m-%d")).mkdir(parents=True,exist_ok=True)
             with lock:
                 state[name].update(status="connecting",error="",last_error="",last_error_at=None,
                                    stop_reason=None,stopped_at=None)
@@ -579,6 +596,11 @@ def worker(name):
                         state[name]["recording_slot_id"]=None
             except Exception:
                 pass
+            finally:
+                # A worker can only release its shared gate after FFmpeg exits.
+                if 'p' in locals() and p is not None and p.poll() is None:
+                    stop_process(name, "shutdown")
+                release_shared(gate_fd)
 
         # Po prawidłowym zakończeniu harmonogramu nie traktujemy tego jako reconnect.
         with lock:
