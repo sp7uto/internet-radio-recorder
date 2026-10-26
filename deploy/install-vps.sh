@@ -7,7 +7,7 @@ ROOT="/srv/irr/app"
 CONTAINER="Internet-Radio-Recorder"
 SERVICE="radio-recorder"
 IMAGE="ghcr.io/sp7uto/internet-radio-recorder:stable"
-SOURCE_COMMIT="e809dafae4af62bebb8578d34c1bdf581e980ac7"
+SOURCE_COMMIT="e9f84f7be3f4563644f646c5f393297fd6cbf9b2"
 BASE="https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/$SOURCE_COMMIT/deploy"
 
 say() { printf '[IRR INSTALL] %s\n' "$*"; }
