@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 
+## [2.2.3] — 2026-10-26
+
+- poprawiono wyłącznie napis w interfejsie: `Zajętość wolumenu Synology` → `Zajętość wolumenu` (PR #17),
+- bez zmian w kodzie nagrywania, API, harmonogramach, wolumenach, konfiguracji i mechanizmie aktualizacji `flock-v1`.
+
 ## [2.2.2] — 2026-10-26
 
 - nowy moduł `maintenance_gate.py` koordynuje start nagrań z aktualizatorem przez `flock` na wspólnym pliku `/config/.irr-maintenance.lock`,
