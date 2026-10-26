@@ -2,15 +2,15 @@
 
 ## Aktualny stan (26 października 2026)
 
-**Wdrożone i potwierdzone na `irr-vps`.** Publikacja obrazów GHCR działa; timer `systemd` jest włączony, kontrola FFmpeg i harmonogramu działa, a pierwsze automatyczne wdrożenie na VPS zakończyło się sukcesem. **Wersja programu nadal wynosi 2.2.1** — zmienił się sposób dostarczania obrazu Docker.
+**Wdrożone i potwierdzone na `irr-vps`:** publikacja GHCR, timer `systemd`, kontrola FFmpeg/harmonogramu i pierwsza aktualizacja v2.2.1. **Wydanie v2.2.2** dodaje atomową blokadę; hostowy skrypt został już podmieniony, lecz uruchomienie nowego obrazu na VPS trzeba osobno potwierdzić w dzienniku usługi.
 
 | Element | Stan |
 |---|---|
 | Repozytorium | [sp7uto/internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder) |
-| Aktualne wydanie | `v2.2.1` |
+| Wydanie w repozytorium | `v2.2.2` |
 | Publiczny rejestr | [GHCR: internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) |
 | Obraz śledzony przez VPS | `ghcr.io/sp7uto/internet-radio-recorder:stable` |
-| Wersjonowany obraz | `ghcr.io/sp7uto/internet-radio-recorder:v2.2.1` |
+| Wersjonowany obraz nowego wydania | `ghcr.io/sp7uto/internet-radio-recorder:v2.2.2` (po publikacji) |
 | Lokalizacja aplikacji na VPS | `/srv/irr/app` |
 | Kontener | `Internet-Radio-Recorder` |
 | Timer | `irr-docker-update.timer`; dwa terminy na godzinę, z losowym opóźnieniem do 60 s |
@@ -31,9 +31,9 @@ Ten zapis dokumentuje konkretny test na VPS; **nie jest gwarancją**, że przysz
 
 ## Atomowa blokada serwisowa — status wdrożenia
 
-Kod nowej blokady serwisowej jest przygotowany w repozytorium dla **przyszłego wydania**. Nie działa jeszcze w opublikowanym obrazie `v2.2.1`. Po wdrożeniu obu części (hostowy aktualizator + rejestrator w nowym obrazie) `flock` na wspólnym pliku `/config/.irr-maintenance.lock` wyeliminuje wyścig pomiędzy uruchomieniem FFmpeg a przyznaniem aktualizatorowi wyłączności. Podczas pierwszej zmiany z `v2.2.1` nadal potrzebna jest podwójna kontrola starego rejestratora.
+Nowa blokada serwisowa należy do **wydania v2.2.2**. Skrypt hostowego aktualizatora na `irr-vps` został zaktualizowany 26.10.2026; potwierdzono zgodność katalogu `/config`. Po uruchomieniu **nowego obrazu** współdzielony `flock` rejestratora i wyłączny `flock` hostowego aktualizatora na wspólnym pliku `/config/.irr-maintenance.lock` eliminują wyścig między startem FFmpeg a przyznaniem wyłączności. Podczas pierwszego przejścia z `v2.2.1` nadal potrzebne są dwie kontrole starego rejestratora.
 
-**Nie należy utożsamiać wdrożenia kodu na `main` z włączeniem tej funkcji na VPS.** Wymagana kolejność i ograniczenia: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
+**Nie należy utożsamiać wydania v2.2.2 na `main` z jego uruchomieniem na VPS.** Wymagana kolejność i ograniczenia: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
 
 ## GitHub Actions i publikowanie obrazów
 
