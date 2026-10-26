@@ -1,82 +1,101 @@
-# Automatyczne aktualizacje IRR: GitHub → GHCR → VPS
+# Automatyczne aktualizacje IRR — GitHub → GHCR → VPS
 
-**Stan:** mechanizm zapisany jako kod do przeglądu. Dodanie dokumentacji i workflow do GitHuba **nie oznacza**, że produkcyjny VPS został zaktualizowany ani że timer jest włączony. Wdrożenie na VPS wymaga osobnego, kontrolowanego etapu.
+## Aktualny stan (26 października 2026)
 
-## Instalator dla istniejącego VPS
+**Wdrożone i potwierdzone na `irr-vps`.** Publikacja obrazów GHCR działa; timer `systemd` jest włączony, kontrola FFmpeg i harmonogramu działa, a pierwsze automatyczne wdrożenie na VPS zakończyło się sukcesem. **Wersja programu nadal wynosi 2.2.1** — zmienił się sposób dostarczania obrazu Docker.
 
-Instalator `deploy/install-vps.sh` jest przeznaczony dla ustalonego serwera **irr-vps** i jego istniejącego projektu `/srv/irr/app`. Wykonuje kontrolę projektu i usługi Docker Compose, pobiera **publiczny** obraz GHCR, instaluje pliki aktualizatora i aktywuje timer, ale nie restartuje produkcyjnego kontenera podczas instalacji.
+| Element | Stan |
+|---|---|
+| Repozytorium | [sp7uto/internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder) |
+| Aktualne wydanie | `v2.2.1` |
+| Publiczny rejestr | [GHCR: internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) |
+| Obraz śledzony przez VPS | `ghcr.io/sp7uto/internet-radio-recorder:stable` |
+| Wersjonowany obraz | `ghcr.io/sp7uto/internet-radio-recorder:v2.2.1` |
+| Lokalizacja aplikacji na VPS | `/srv/irr/app` |
+| Kontener | `Internet-Radio-Recorder` |
+| Timer | `irr-docker-update.timer`; dwa terminy na godzinę, z losowym opóźnieniem do 60 s |
+| Automatyczne aktualizacje QNAP/Synology | **Nie wdrożono**; działają dotychczasowe synchronizacje |
 
-Na VPS (jako `debian`) najpierw pobierz skrypt z przypiętej wersji repozytorium i sprawdź go przed uruchomieniem. **Nie należy wklejać do terminala niezweryfikowanego skryptu z przypadkowej gałęzi.**
+### Potwierdzone pierwsze wdrożenie
 
-```bash
-cd ~
-curl -fsSLo irr-install-vps.sh https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/deploy/install-vps.sh
-bash -n irr-install-vps.sh
-sudo bash irr-install-vps.sh
-```
+Dziennik `irr-vps` z **2026-10-26**, czas lokalny **CET**:
 
-Instalator przerwie się bez restartu, jeśli zastany projekt Compose, etykiety kontenera lub GHCR są niezgodne. Przy pomyślnej instalacji, przyszłe uruchomienia timera mogą samodzielnie wdrażać obrazy w wykrytych oknach wolnych od nagrywania. Dokładny moment nie jest gwarantowany, ponieważ kontrola i restart nie są atomowe; zobacz ryzyko opisane poniżej.
+- **01:30:22** — uruchomienie przez `systemd`, pobranie / weryfikacja obrazu `:stable`.
+- **01:30:23–01:30:24** — dwukrotne `IRR UPDATE ALLOWED` po sprawdzeniu procesów i harmonogramu.
+- **01:30:24–01:30:35** — odtworzenie kontenera Docker i jego uruchomienie.
+- **01:30:39** — `[IRR UPDATE] SUKCES` oraz `status=0/SUCCESS` usługi.
 
-## 1. Publikowanie obrazów
+Zarejestrowany identyfikator obrazu: `sha256:54a13eb676dce6e4e40a9f72a4a9d920c3989634ea50116bd029c9d8c92ae3f2`. Zachowany obraz awaryjny: `irr-rollback:20261026-003023` (znacznik czasu w nazwie jest w **UTC**, czyli 00:30:23 UTC = 01:30:23 CET).
 
-- `.github/workflows/ci.yml`: kontrola kodu Python, testów i budowy Docker.
-- `.github/workflows/release.yml`: przy nowym numerze w `VERSION` publikuje GitHub Release i dołącza archiwa z sumami SHA256.
-- `.github/workflows/publish-docker.yml`: jako reusable workflow po utworzeniu Release publikuje obrazy do GitHub Container Registry, bez polegania na zdarzeniu `release` wywołanym przez `GITHUB_TOKEN`.
-- Obrazy dla AMD64: `ghcr.io/sp7uto/internet-radio-recorder:vX.Y.Z` oraz `:stable`.
+Ten zapis dokumentuje konkretny test na VPS; **nie jest gwarancją**, że przyszłe aktualizacje będą trwały tyle samo albo że start nowej audycji nie zbiegnie się z restartem.
 
-Dla istniejącej wersji `v2.2.1` po zaakceptowaniu PR i sprawdzeniu uprawnień do pakietów można ręcznie uruchomić **GitHub Actions → Publish Docker image → Run workflow**, wskazując `release_tag=v2.2.1`. Workflow sprawdza, czy wybrany tag jest najnowszym stabilnym wydaniem, żeby nie cofnąć `:stable`.
+## GitHub Actions i publikowanie obrazów
 
-Pakiet GHCR trzeba udostępnić publicznie albo bezpiecznie skonfigurować poświadczenia odczytu na VPS. Tokenów nie zapisuje się w Compose ani repozytorium.
+- `.github/workflows/ci.yml` — testy Pythona, aktualizatora, składni powłoki i budowy Dockera.
+- `.github/workflows/release.yml` — przygotowuje nowe GitHub Release przy nowej wersji określonej w `VERSION`, po czym wywołuje workflow publikacji Docker.
+- `.github/workflows/publish-docker.yml` — publikuje obraz po wywołaniu przez `release.yml`; obsługuje też ręczne uruchomienie oraz uruchomienie po zmianie własnego pliku na `main`. Odczytuje aktualne stabilne wydanie, buduje z **tagu wydania**, a nie z późniejszych commitów dokumentacyjnych.
+- Rejestr GHCR jest publiczny; dla `irr-vps` nie jest potrzebny prywatny token odczytu. Workflow publikujący korzysta z `GITHUB_TOKEN` z prawem `packages: write`.
 
-## 2. Plan bezpiecznych aktualizacji na VPS
+Znaczniki `vX.Y.Z` są wersjonowane, natomiast `:stable` wskazuje ostatnie opublikowane stabilne wydanie. Automatyczny VPS śledzi `:stable`.
 
-Pliki do ewentualnej instalacji:
+## Jak pracuje aktualizator na VPS
 
-```text
-deploy/compose.ghcr.yaml
-deploy/irr-update-guard.py
-deploy/irr-docker-update
-deploy/systemd/irr-docker-update.service
-deploy/systemd/irr-docker-update.timer
-tools/test_update_guard.py
-```
+1. Timer wywołuje usługę jednorazową `/usr/local/sbin/irr-docker-update`.
+2. Skrypt uzyskuje blokadę `flock`, sprawdza brak `/var/lib/irr-updater/HOLD` i zgodność projektu/usługi Docker Compose.
+3. Pobiera obraz GHCR **bez zatrzymywania nagrywania**. Gdy identyfikator obrazu jest identyczny z uruchomionym, kończy bez restartu.
+4. Wykonuje kontrolę przez `/usr/local/sbin/irr-update-guard.py`: procesy `ffmpeg` są sprawdzane przez `/proc/*/cmdline` **wewnątrz kontenera**, a stan stacji i kolejne terminy przez `/api/data`. Nie używa już hostowego `docker top -eo args` (poprawka [PR #8](https://github.com/sp7uto/internet-radio-recorder/pull/8)).
+5. Aktualizacja jest odraczana przy nagrywaniu, nieznanym stanie, błędzie odczytu albo zbyt bliskiej audycji. Minimalny odstęp od następnego nagrania: **20 minut**. Kontrola jest wykonywana ponownie tuż przed odtworzeniem kontenera.
+6. Przed wdrożeniem zapisuje poprzedni obraz jako `irr-rollback:YYYYMMDD-HHMMSS` (UTC), aktualizuje **wyłącznie usługę IRR**, sprawdza jej API i w razie błędu próbuje automatycznie wrócić do poprzedniego obrazu oraz tworzy `HOLD`.
 
-Timer co pół godziny uruchamia usługę jednorazową. Jej zadaniem jest:
+**Ograniczenie:** kontrola harmonogramu nie blokuje atomowo rozpoczęcia nowego nagrania. Pomimo dwóch kontroli istnieje niewielkie okno wyścigu. Automatyzacja **zmniejsza ryzyko utraty audycji, ale nie gwarantuje absolutnie bezprzerwowego nagrywania**. Pełna gwarancja wymagałaby wprowadzenia blokady serwisowej do logiki IRR lub drugiego rejestratora.
 
-1. Założyć blokadę `flock`, sprawdzić brak blokady `HOLD` po nieudanym wdrożeniu.
-2. Odczytać istniejące pliki Docker Compose i sprawdzić, czy wskazują dokładnie produkcyjny projekt i usługę.
-3. Pobrać nowy obraz GHCR poleceniem `docker pull` bez zatrzymywania kontenera.
-4. Jeśli obraz jest inny: sprawdzić API `/api/data` oraz żywe procesy FFmpeg w kontenerze. Wątpliwość, aktywne nagranie, nieznany stan lub bliski start audycji (poniżej 20 min) **blokują** aktualizację.
-5. Zachować stary obraz jako `irr-rollback:...`, sprawdzić nagrywanie ponownie, a następnie odtworzyć usługę z nakładką GHCR. Zachować dotychczasowe wolumeny i pliki `.env`.
-6. Sprawdzić API nowego kontenera. Po błędzie spróbować przywrócić poprzedni obraz oraz włączyć `HOLD`, aby kolejne automatyczne wdrożenia nie powodowały pętli.
-
-**Istotne ograniczenie:** odczyt harmonogramu i statusu nie jest blokadą atomową. Pomiędzy kontrolą a odtworzeniem kontenera może zacząć się nagranie. Zmniejsza to ryzyko, ale nie daje gwarancji bezprzerwowej rejestracji. Pełna gwarancja wymagałaby blokady konserwacyjnej w IRR lub drugiego rejestratora.
-
-## 3. Specyfika instalacji irr-vps
-
-Produkcja działa w `/srv/irr/app`, na obrazie `internet-radio-recorder:2.2.1`. Lokalny katalog Git pozostał na commicie wersji 2.2.0, ma własne zmiany w Compose i `compose.override.yaml`. **Nie wolno wykonywać automatycznego `git pull` w katalogu produkcyjnym**. Nie dotykamy zadań synchronizacji VPS → QNAP → Synology. Kontener IRR na QNAP jest celowo zatrzymany.
-
-Przed instalacją usługi zweryfikuj rzeczywiste etykiety projektu Compose, końcową konfigurację `docker compose config`, kopie bezpieczeństwa oraz uprawnienia do GHCR. Samego workflow GitHub nie należy mylić z uruchomieniem aktualizacji.
-
-Docelowe lokalizacje plików na VPS, **po osobnym zatwierdzeniu**:
+## Pliki zainstalowane na irr-vps
 
 ```text
-/etc/irr-updater/compose.ghcr.yaml
-/usr/local/sbin/irr-update-guard.py
-/usr/local/sbin/irr-docker-update
+/srv/irr/app/                                # produkcyjny Compose i pliki danych
+/etc/irr-updater/compose.ghcr.yaml           # dodatkowa nakładka: obraz GHCR
+/usr/local/sbin/irr-update-guard.py          # kontrola FFmpeg/API/harmonogramu
+/usr/local/sbin/irr-docker-update            # wdrożenie / rollback
 /etc/systemd/system/irr-docker-update.service
 /etc/systemd/system/irr-docker-update.timer
-/var/lib/irr-updater/
+/var/lib/irr-updater/                        # stan, lock, HOLD po awarii
+/var/backups/irr-updater/                    # kopie plików instalatora
 ```
 
-Po kontrolowanej instalacji, pierwszym teście bez aktywnych nagrań i potwierdzeniu poprawności aktualizacji można włączyć timer `systemctl enable --now irr-docker-update.timer`. Wcześniej NIE uruchamiaj timera automatycznie.
+Instalator znajduje się w [`deploy/install-vps.sh`](../deploy/install-vps.sh). **Jest już wykonany na `irr-vps`; nie uruchamiaj go ponownie tylko po to, by sprawdzić status.** Nie zmienia on istniejącego Compose i nie restartuje kontenera podczas instalacji. Na VPS lokalny Git w `/srv/irr/app` pozostaje niezależny od działającego obrazu i ma lokalne zmiany; automatyzacja **nie wykonuje `git pull`** w tym katalogu.
 
-## 4. Diagnostyka i wycofanie
+Dotychczasowy łańcuch synchronizacji **VPS → QNAP → Synology** pozostał bez zmian. Kontener IRR na QNAP jest celowo zatrzymany.
 
-- Wyłączenie automatyki: `sudo systemctl disable --now irr-docker-update.timer`.
-- Kontrola usługi: `sudo journalctl -u irr-docker-update.service -n 100 --no-pager`.
-- Status timera: `sudo systemctl status irr-docker-update.timer`.
-- Blokada po nieudanym wdrożeniu: `/var/lib/irr-updater/HOLD`. Nie usuwaj jej bez zbadania przyczyny.
-- Obraz awaryjny pozostaje lokalnie oznaczony `irr-rollback:...`. Zachowanie `/config` oraz `/recordings` jest warunkiem każdego wdrożenia.
+## Sprawdzenie statusu (tylko odczyt, na irr-vps)
 
-Zobacz także [Instalacja](INSTALLATION.md), [GitHub Publishing](GITHUB_PUBLISHING.md) i [Security](../SECURITY.md).
+```bash
+echo "===== TIMER ====="
+systemctl is-enabled irr-docker-update.timer
+systemctl is-active irr-docker-update.timer
+systemctl list-timers --all irr-docker-update.timer --no-pager
+
+echo "===== OSTATNIE WYKONANIE ====="
+sudo systemctl status irr-docker-update.service --no-pager -l || true
+sudo journalctl -u irr-docker-update.service -n 60 --no-pager
+
+echo "===== DZIALAJACY OBRAZ ====="
+docker inspect -f 'Obraz: {{.Config.Image}} | Stan: {{.State.Status}} | Start: {{.State.StartedAt}}' Internet-Radio-Recorder
+
+echo "===== WERYFIKACJA KONTROLI BEZ RESTARTU ====="
+sudo python3 -B /usr/local/sbin/irr-update-guard.py
+echo "Kod kontroli: $?"
+```
+
+Wynik `IRR UPDATE ALLOWED` oznacza jedynie, że aktualne warunki **wydają się bezpieczne**; polecenie kontrolne nie aktualizuje obrazu. Wynik `IRR UPDATE DEFERRED` jest prawidłowy przy aktywnej audycji, zbliżającym się zadaniu lub nieznanym stanie.
+
+`journalctl -f` obserwuje na żywo i **nie kończy się samoczynnie**; do jednorazowego sprawdzenia używaj `-n ... --no-pager`.
+
+## Awaryjne wyłączenie i wycofanie
+
+- Wyłączenie **samej automatyki**, bez zatrzymywania kontenera: `sudo systemctl disable --now irr-docker-update.timer`.
+- Weryfikacja ostatnich uruchomień: `sudo journalctl -u irr-docker-update.service -n 100 --no-pager`.
+- W razie nieudanej aktualizacji skrypt podejmuje próbę rollbacku i zapisuje `/var/lib/irr-updater/HOLD`. Nie usuwaj pliku `HOLD` bez diagnozy błędu.
+- Lokalny poprzedni obraz jest dostępny pod znacznikiem `irr-rollback:...`; jego przywrócenie powinno odbywać się w bezpiecznym oknie i z zachowaniem `/config` oraz `/recordings`.
+- Automatyczne testy API nie weryfikują jakości wszystkich przyszłych nagrań. Po ważnym wydaniu sprawdź również Historię i nowe pliki audio.
+
+Więcej: [Instalacja](INSTALLATION.md), [Publikowanie GitHub](GITHUB_PUBLISHING.md), [Rozwiązywanie problemów](TROUBLESHOOTING.md), [Bezpieczeństwo](../SECURITY.md).
