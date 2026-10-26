@@ -2,14 +2,14 @@
 
 Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 
-## Planowane v2.2.2 — atomowa blokada serwisowa (kod przygotowany, NIE WDROŻONO)
+## [2.2.2] — 2026-10-26
 
 - nowy moduł `maintenance_gate.py` koordynuje start nagrań z aktualizatorem przez `flock` na wspólnym pliku `/config/.irr-maintenance.lock`,
 - współdzielona blokada każdego workera jest utrzymywana od FFprobe przez czas trwania FFmpeg,
 - skrypt aktualizujący na VPS uzyskuje blokadę wyłączną aż do sukcesu lub rollbacku, sprawdza zgodność bind mount `/config` i weryfikuje funkcję blokady w nowym obrazie,
 - testy symulują wielokrotne współdzielone blokady, współbieżny proces i utratę dostępu do pliku.
 
-**Stan:** wdrożenie na `irr-vps` wymaga osobnej podmiany hostowego aktualizatora, a później publikacji nowego obrazu. Obecny publiczny obraz `v2.2.1` nie korzysta z tej funkcji. Szczegóły: [docs/ATOMIC_MAINTENANCE.md](docs/ATOMIC_MAINTENANCE.md).
+**Wdrożenie:** skrypt aktualizatora na `irr-vps` podmieniono i zweryfikowano 26.10.2026 (kopia: `irr-docker-update.bak-20261026-023441`). Sam rejestrator zyskuje pełną blokadę dopiero po automatycznym wdrożeniu obrazu v2.2.2. Pierwsze przejście ze starego obrazu nadal używa dwóch kontroli FFmpeg/harmonogramu. Szczegóły: [docs/ATOMIC_MAINTENANCE.md](docs/ATOMIC_MAINTENANCE.md).
 
 ## Infrastruktura i dokumentacja — 2026-10-26 (bez zmiany wersji aplikacji)
 
@@ -20,7 +20,7 @@ Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 - naprawiono sprawdzanie procesów FFmpeg: w miejsce niedziałającego `docker top ... -eo args` używany jest odczyt `/proc` wewnątrz kontenera; weryfikacja w CI,
 - pierwsze automatyczne wdrożenie obrazu `v2.2.1` z GHCR: **2026-10-26 01:30 CET**, status `SUCCESS`, z zachowaniem lokalnego obrazu rollback.
 
-Nie utworzono nowej wersji programu: `VERSION` nadal ma wartość `2.2.1`. Zmiany dotyczą dystrybucji, aktualizatora i dokumentacji, nie działania rejestratora.
+Wpis historyczny dotyczy wdrożenia infrastruktury wcześniejszej wersji v2.2.1. Późniejsze wydanie v2.2.2 dodaje blokadę serwisową.
 
 ## [2.2.1] — 2026-09-15
 
