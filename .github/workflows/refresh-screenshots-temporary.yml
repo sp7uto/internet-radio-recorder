@@ -6,6 +6,7 @@ on:
       - docs/screenshots-v221-20261026
     paths:
       - .github/workflows/refresh-screenshots-temporary.yml
+      - tools/refresh_screenshot_versions.py
 
 permissions:
   contents: write
