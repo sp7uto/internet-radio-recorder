@@ -2,6 +2,15 @@
 
 Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 
+## Planowane v2.2.2 — atomowa blokada serwisowa (kod przygotowany, NIE WDROŻONO)
+
+- nowy moduł `maintenance_gate.py` koordynuje start nagrań z aktualizatorem przez `flock` na wspólnym pliku `/config/.irr-maintenance.lock`,
+- współdzielona blokada każdego workera jest utrzymywana od FFprobe przez czas trwania FFmpeg,
+- skrypt aktualizujący na VPS uzyskuje blokadę wyłączną aż do sukcesu lub rollbacku, sprawdza zgodność bind mount `/config` i weryfikuje funkcję blokady w nowym obrazie,
+- testy symulują wielokrotne współdzielone blokady, współbieżny proces i utratę dostępu do pliku.
+
+**Stan:** wdrożenie na `irr-vps` wymaga osobnej podmiany hostowego aktualizatora, a później publikacji nowego obrazu. Obecny publiczny obraz `v2.2.1` nie korzysta z tej funkcji. Szczegóły: [docs/ATOMIC_MAINTENANCE.md](docs/ATOMIC_MAINTENANCE.md).
+
 ## Infrastruktura i dokumentacja — 2026-10-26 (bez zmiany wersji aplikacji)
 
 - uporządkowano dokumentację, usunięto nieaktualne instrukcje i powtórzenia w README,
