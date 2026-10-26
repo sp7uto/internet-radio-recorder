@@ -6,6 +6,10 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+
+import recorder
 
 from maintenance_gate import acquire_shared, release_shared
 
@@ -94,6 +98,70 @@ sys.exit(0)
         with self.assertRaises(FileNotFoundError):
             acquire_shared(missing_directory)
 
+
+
+
+class RecordingWorkerGateTests(unittest.TestCase):
+    def setUp(self):
+        self.original_running = recorder.running
+        self.original_out = recorder.OUT
+        self.original_state = recorder.state
+        self.original_procs = recorder.procs
+        self.tmp = tempfile.TemporaryDirectory()
+        recorder.OUT = Path(self.tmp.name)
+        recorder.state = {}
+        recorder.procs = {}
+        recorder.running = True
+        self.station = {
+            "name": "Radio Test",
+            "url": "https://invalid.example/stream",
+            "enabled": True,
+            "schedule": {},
+        }
+
+    def tearDown(self):
+        recorder.running = self.original_running
+        recorder.OUT = self.original_out
+        recorder.state = self.original_state
+        recorder.procs = self.original_procs
+        self.tmp.cleanup()
+
+    def halt_after_sleep(self, _seconds):
+        recorder.running = False
+
+    def test_exclusive_maintenance_prevents_ffprobe_and_ffmpeg(self):
+        with patch.object(recorder, "load", return_value=[self.station]), \
+             patch.object(recorder, "active", return_value=(True, "slot", "Test", None)), \
+             patch.object(recorder, "next_schedule", return_value=None), \
+             patch.object(recorder, "acquire_shared", return_value=None), \
+             patch.object(recorder, "ffprobe_info") as probe, \
+             patch.object(recorder.subprocess, "Popen") as popen, \
+             patch.object(recorder.time, "sleep", side_effect=self.halt_after_sleep):
+            recorder.worker(self.station["name"])
+        probe.assert_not_called()
+        popen.assert_not_called()
+        self.assertEqual(recorder.state["Radio Test"]["status"], "maintenance")
+
+    def test_successful_recording_releases_gate(self):
+        child = SimpleNamespace(
+            poll=lambda: 0,
+            wait=lambda timeout=None: 0,
+            returncode=0,
+            stderr=[],
+        )
+        with patch.object(recorder, "load", return_value=[self.station]), \
+             patch.object(recorder, "active", return_value=(True, "slot", "Test", None)), \
+             patch.object(recorder, "next_schedule", return_value=None), \
+             patch.object(recorder, "acquire_shared", return_value=123) as acquire, \
+             patch.object(recorder, "release_shared") as release, \
+             patch.object(recorder, "ffprobe_info", return_value={"ok":False}), \
+             patch.object(recorder.subprocess, "Popen", return_value=child), \
+             patch.object(recorder, "recording_result", return_value={"file":"test.mp3","size":100,"empty":False}), \
+             patch.object(recorder, "add_exec"), \
+             patch.object(recorder.time, "sleep", side_effect=self.halt_after_sleep):
+            recorder.worker(self.station["name"])
+        acquire.assert_called_once()
+        release.assert_called_once_with(123)
 
 if __name__ == "__main__":
     unittest.main()
