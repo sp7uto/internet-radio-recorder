@@ -20,9 +20,13 @@ Repozytorium: [sp7uto/internet-radio-recorder](https://github.com/sp7uto/interne
 5. Sprawdź GitHub Release, archiwa, sumy kontrolne i GHCR.
 6. Dopiero po weryfikacji pakietu dopuść jego wdrożenie na serwerze.
 
-## Pierwszy obraz dla istniejącego wydania
+## Stan publikacji obrazów GHCR (26.10.2026)
 
-Istniejące wydanie `v2.2.1` utworzono zanim uruchomiono publikowanie GHCR. Po zatwierdzeniu nowego workflow obraz dla tej wersji można opublikować ręcznie przez GitHub Actions **Publish Docker image → Run workflow** z wejściem `release_tag=v2.2.1`. Ręczne uruchamianie dla starszych tagów może cofnąć wskazanie `:stable`; używaj wyłącznie najnowszego stabilnego wydania.
+**Pierwsza publikacja obrazu v2.2.1 została wykonana automatycznie i zakończona sukcesem.** Pakiet jest publiczny: [GHCR Internet Radio Recorder](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder). Oba znaczniki są dostępne: `v2.2.1` i `stable`.
+
+Publikacja istniejącej wersji została uruchomiona przez zmianę samego `.github/workflows/publish-docker.yml` na `main` ([PR #4](https://github.com/sp7uto/internet-radio-recorder/pull/4)); nie było konieczności tworzenia fikcyjnej wersji 2.2.2. Dla przyszłych nowych wydań `release.yml` wywołuje `publish-docker.yml` przez `workflow_call`. Możliwe jest także ręczne uruchomienie `workflow_dispatch`, ale workflow dopuszcza tylko najnowsze stabilne wydanie, aby nie cofnąć `:stable`.
+
+**Ważne:** aktualizacje dokumentacji, instalatora lub workflow nie są nową wersją rejestratora i nie muszą tworzyć kolejnego obrazu aplikacji. Przy przyszłych zmianach kodu przed wydaniem stabilnym aktualizuj równolegle instrukcje, `CHANGELOG.md` i ewentualne testy aktualizatora. Po opublikowaniu sprawdź GitHub Release, status GHCR oraz test odczytu na środowisku docelowym.
 
 ## Dostęp
 

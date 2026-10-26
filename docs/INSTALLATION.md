@@ -35,7 +35,9 @@ Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją prod
 
 ## Automatyczna aktualizacja przez GHCR
 
-Publikacja obrazu w GHCR i uruchomienie automatu na serwerze to **dwa odrębne etapy**. Dokumentacja i plan: [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md). Samo scalenie zmian w GitHubie nie aktualizuje produkcyjnego Dockera.
+**Dostępne i przetestowane** dla instalacji referencyjnej `irr-vps`: publiczny obraz GHCR `ghcr.io/sp7uto/internet-radio-recorder:stable`, timer `systemd`, kontrola FFmpeg i harmonogramu oraz rollback. Pierwsze automatyczne wdrożenie zakończyło się sukcesem **26.10.2026 o 01:30 CET**. Patrz [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md).
+
+W zwykłej instalacji Docker Compose **timer nie jest instalowany automatycznie**. Skrypt `deploy/install-vps.sh` jest dostosowany do konkretnego układu `irr-vps`; nie uruchamiaj go na Synology/QNAP ani na innym serwerze bez weryfikacji projektu, ścieżek i usług. Samo scalenie zmian na GitHubie nie włącza aktualizatora na kolejnych serwerach.
 
 ## Zmienne
 

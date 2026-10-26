@@ -260,6 +260,8 @@ SECURITY.md
 * [Backup and import/merge](docs/BACKUP_AND_MERGE.md)
 * [API and endpoints](docs/API.md)
 * [Troubleshooting](docs/TROUBLESHOOTING.md)
+* [Automatic Docker updates (GHCR / VPS)](docs/AUTOMATIC_UPDATES.md)
+* [GitHub release and package publishing](docs/GITHUB_PUBLISHING.md)
 * [Security](SECURITY.md)
 * [Changelog](CHANGELOG.md)
 
@@ -287,9 +289,9 @@ Mounted `/config` and `/recordings` directories must therefore be writable by th
 
 ## Latest Release
 
-Current stable release: **v2.2.1**. This release fixes MP3 recording output selection, missing/empty file detection and execution diagnostics. See [release notes](RELEASE_NOTES_v2.2.1.md).
+Current stable release: **v2.2.1**. This release fixes MP3 recording output selection, missing/empty file detection and execution diagnostics. See [GitHub release notes](https://github.com/sp7uto/internet-radio-recorder/releases/tag/v2.2.1).
 
-**Automatic image publishing and VPS updates:** the implementation is proposed in [Automatic updates](docs/AUTOMATIC_UPDATES.md). It is not enabled just by merging the documentation. The VPS must be configured and the first image published separately.
+**Automated Docker delivery:** stable images are published to the [public GHCR package](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) as `ghcr.io/sp7uto/internet-radio-recorder:stable` and with versioned tags (currently `v2.2.1`). The reference `irr-vps` deployment successfully performed its first guarded automatic Docker update on **2026-10-26 at 01:30 CET**. This VPS-specific automation is optional; a normal Docker Compose installation does not install the timer. See [Automatic updates](docs/AUTOMATIC_UPDATES.md) for status, safety limits, troubleshooting and rollback.
 
 ## Contributing
 
