@@ -49,3 +49,45 @@ Problem opisany w zgłoszeniu [#1](https://github.com/sp7uto/internet-radio-reco
 ## Aktualizator Docker nie wdraża nowego obrazu
 
 Zobacz [Automatyczne aktualizacje](AUTOMATIC_UPDATES.md): sprawdź, czy GHCR jest osiągalny, czy kontrola harmonogramu pozwala na restart, oraz czy usługa nie jest zablokowana plikiem `HOLD`. Nigdy nie zatrzymuj ręcznie pracującego FFmpeg wyłącznie po to, aby wymusić aktualizację.
+
+
+## IRR UPDATE DEFERRED: Nie mozna sprawdzic FFmpeg
+
+W pierwszej wersji aktualizatora użyto `docker top Internet-Radio-Recorder -eo args`. Na referencyjnym `irr-vps` polecenie to kończyło się błędem, dlatego mechanizm zgodnie z zasadą bezpieczeństwa blokował aktualizację.
+
+**Naprawiono w [PR #8](https://github.com/sp7uto/internet-radio-recorder/pull/8)**: aktualny `deploy/irr-update-guard.py` sprawdza `/proc/*/cmdline` wewnątrz kontenera przez `docker exec`. Jeśli na VPS błąd powraca, sprawdź, czy zainstalowany skrypt zawiera `FFMPEG_SCAN`:
+
+```bash
+grep -n 'FFMPEG_SCAN' /usr/local/sbin/irr-update-guard.py
+sudo python3 -B /usr/local/sbin/irr-update-guard.py
+```
+
+Jeżeli lokalny plik jest stary, uaktualnij **wyłącznie** ten skrypt po wykonaniu kopii zapasowej, bez restartu kontenera. Nie uruchamiaj całego instalatora ponownie bez potrzeby.
+
+## Permission denied: /tmp/__pycache__ podczas testu poprawki
+
+Błąd `python3 -m py_compile` dla pliku utworzonego przez `mktemp` wynikał z braku możliwości zapisania pliku `.pyc` w `/tmp/__pycache__`. Nie jest to błąd nagrywania. Sprawdź składnię **bez generowania .pyc**:
+
+```bash
+python3 -B -c '
+import ast, sys
+with open(sys.argv[1], encoding="utf-8") as f:
+    ast.parse(f.read())
+print("Skladnia: OK")
+' /usr/local/sbin/irr-update-guard.py
+```
+
+Nie trzeba zmieniać praw całego `/tmp` ani usuwać cudzych plików.
+
+## Timer aktywny, ale w journalctl brak wpisów
+
+`journalctl -f` czeka na nowe logi; nie jest to zawieszenie. Jeżeli termin w `systemctl list-timers --all irr-docker-update.timer` jest jeszcze w przyszłości, usługa mogła się jeszcze nie wykonać. Po terminie użyj:
+
+```bash
+date -Is
+systemctl list-timers --all irr-docker-update.timer --no-pager
+sudo journalctl -u irr-docker-update.service -n 50 --no-pager
+docker inspect -f 'Obraz: {{.Config.Image}} | Stan: {{.State.Status}}' Internet-Radio-Recorder
+```
+
+Na `irr-vps` pierwsza automatyczna aktualizacja zakończyła się `SUKCES` **2026-10-26 01:30:39 CET**. Sam wynik `IRR UPDATE ALLOWED` nie znaczy, że obraz był już aktualizowany — to tylko pozytywna kontrola warunków.
