@@ -9,7 +9,7 @@ Wszystkie istotne zmiany projektu Internet Radio Recorder są opisane poniżej.
 - skrypt aktualizujący na VPS uzyskuje blokadę wyłączną aż do sukcesu lub rollbacku, sprawdza zgodność bind mount `/config` i weryfikuje funkcję blokady w nowym obrazie,
 - testy symulują wielokrotne współdzielone blokady, współbieżny proces i utratę dostępu do pliku.
 
-**Wdrożenie:** skrypt aktualizatora na `irr-vps` podmieniono i zweryfikowano 26.10.2026 (kopia: `irr-docker-update.bak-20261026-023441`). Sam rejestrator zyskuje pełną blokadę dopiero po automatycznym wdrożeniu obrazu v2.2.2. Pierwsze przejście ze starego obrazu nadal używa dwóch kontroli FFmpeg/harmonogramu. Szczegóły: [docs/ATOMIC_MAINTENANCE.md](docs/ATOMIC_MAINTENANCE.md).
+**Wdrożenie produkcyjne potwierdzone:** 26.10.2026 hostowy skrypt aktualizatora na `irr-vps` zaktualizowano z kopią `irr-docker-update.bak-20261026-023441`. Tego samego dnia automatyczny timer pobrał nowy obraz v2.2.2 i o **03:01:21 CET** zakończył aktualizację komunikatem `SUKCES: ... atomowa blokada serwisowa aktywna`. Kontener pracuje na nowym obrazie, a polecenie kontrolne zwróciło `flock-v1`. Obraz awaryjny: `irr-rollback:20261026-020106`. Pierwsze przejście ze starego obrazu zabezpieczyły dwie kontrole FFmpeg/harmonogramu. Szczegóły: [docs/ATOMIC_MAINTENANCE.md](docs/ATOMIC_MAINTENANCE.md).
 
 ## Infrastruktura i dokumentacja — 2026-10-26 (bez zmiany wersji aplikacji)
 

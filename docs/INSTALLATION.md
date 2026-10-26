@@ -35,9 +35,9 @@ Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją prod
 
 ## Automatyczna aktualizacja przez GHCR
 
-**Dostępne i przetestowane** dla instalacji referencyjnej `irr-vps`: publiczny obraz GHCR `ghcr.io/sp7uto/internet-radio-recorder:stable`, timer `systemd`, kontrola FFmpeg i harmonogramu oraz rollback. Pierwsze automatyczne wdrożenie zakończyło się sukcesem **26.10.2026 o 01:30 CET**. Patrz [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md).
+**Dostępne i przetestowane** dla instalacji referencyjnej `irr-vps`: publiczny obraz GHCR `ghcr.io/sp7uto/internet-radio-recorder:stable`, timer `systemd`, kontrola FFmpeg i harmonogramu oraz rollback. Pierwsze automatyczne wdrożenie (v2.2.1) zakończyło się sukcesem **26.10.2026 o 01:30 CET**, a wdrożenie **v2.2.2 z atomową blokadą** potwierdzono tego samego dnia o **03:01:21 CET**. Patrz [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md).
 
-**Atomowa blokada serwisowa** jest częścią wydania v2.2.2. Hostowy aktualizator na `irr-vps` jest już przygotowany; blokada zacznie działać na tym serwerze po wdrożeniu nowego obrazu rejestratora: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
+**Atomowa blokada serwisowa** jest częścią wydania v2.2.2 i działa na `irr-vps`: zgodny aktualizator jest zainstalowany, nowy obraz uruchomiony, a kontrola wewnątrz kontenera zwróciła `flock-v1`: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
 
 W zwykłej instalacji Docker Compose **timer nie jest instalowany automatycznie**. Skrypt `deploy/install-vps.sh` jest dostosowany do konkretnego układu `irr-vps`; nie uruchamiaj go na Synology/QNAP ani na innym serwerze bez weryfikacji projektu, ścieżek i usług. Samo scalenie zmian na GitHubie nie włącza aktualizatora na kolejnych serwerach.
 

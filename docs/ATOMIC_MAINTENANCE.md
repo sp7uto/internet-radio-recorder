@@ -1,10 +1,10 @@
 # Atomowa blokada serwisowa IRR — projekt i procedura wdrożenia
 
-> **Status 26.10.2026:** funkcja została ujęta w wydaniu **v2.2.2**.
-> Na `irr-vps` nowy skrypt aktualizatora został już zainstalowany i
-> sprawdzony, ale pełne działanie atomowej blokady na produkcji wymaga
-> jeszcze **wdrożenia nowego obrazu** przez timer. Samo scalenie wydania
-> na GitHubie nie potwierdza wykonania tej operacji.
+> **Status 26.10.2026: WDROŻONE NA `irr-vps`.** GitHub opublikował
+> wydanie i obraz **v2.2.2**. Timer produkcyjnego VPS automatycznie
+> wdrożył obraz i zakończył o **03:01:21 CET** ze statusem `SUKCES`.
+> W logach potwierdzono blokadę wyłączną aktualizatora, zaś nowy
+> kontener działa i zgłasza `flock-v1`. Nie uruchamiano aktualizacji ręcznie.
 
 ## Na czym polega gwarancja
 
@@ -69,20 +69,25 @@ harmonogramów, systemów synchronizacji ani UI.
    Nie trzeba powtarzać tej czynności.
 3. **Wykonano:** potwierdzono, że `/config` w kontenerze jest bind
    mount dokładnie `/srv/irr/app/config`; nie zmieniano wolumenów.
-4. Utworzenie wydania **v2.2.2** uruchamia publikowanie obrazu w GHCR.
-   Należy sprawdzić zakończenie workflow i udostępnienie `:stable`.
+4. **Wykonano:** GitHub Actions opublikował wersjonowany obraz
+   `ghcr.io/sp7uto/internet-radio-recorder:v2.2.2` oraz `:stable`.
+   Digest: `sha256:a10d32ef0821ce9cf04ce4e653adc06111feac357c0e2e30e95614e113807fb7`.
 5. Pierwsze przejście z `v2.2.1` na nowe wydanie jest etapem bootstrap:
    stara wersja rejestratora **jeszcze nie trzyma** współdzielonych blokad.
    Aktualizator wykonuje dlatego dwukrotny guard FFmpeg/harmonogramu i
    wybiera bezpieczne okno. Dopiero **po uruchomieniu nowego obrazu** obie
    strony używają atomowej blokady — kolejne aktualizacje są synchronizowane.
-6. Sprawdź dziennik `systemd` i aktualny obraz; szczególnie komunikaty
-   `Atomowa blokada serwisowa zalozona` i
-   `atomowa blokada serwisowa aktywna`.
+6. **Wykonano:** aktualizator 26.10.2026 w przedziale **03:00:47–03:01:21 CET**
+   pobrał nowy obraz, dwukrotnie uzyskał `IRR UPDATE ALLOWED`,
+   następnie zapisał `Atomowa blokada serwisowa zalozona`, odtworzył
+   kontener w godzinach **03:01:06–03:01:17** i zakończył komunikatem
+   `SUKCES: ... atomowa blokada serwisowa aktywna`. Odczyt z działającego
+   kontenera zwrócił `flock-v1`.
 
-**Z uwagi na etap przejściowy nie wolno twierdzić, że produkcja jest
-chroniona atomowo, dopóki nie potwierdzimy w logu aktualizatora i w
-uruchomionym kontenerze wdrożenia v2.2.2.**
+Poprzedni obraz zachowano jako `irr-rollback:20261026-020106`.
+Pełna koordynacja blokad zaczęła działać po uruchomieniu v2.2.2.
+Przyszłe aktualizacje nadal nie gwarantują zapisu od pierwszej sekundy
+audycji rozpoczynającej się w trakcie restartu.
 
 ## Diagnostyka wyłącznie do odczytu na irr-vps
 

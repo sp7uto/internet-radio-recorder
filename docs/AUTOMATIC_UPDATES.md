@@ -2,15 +2,15 @@
 
 ## Aktualny stan (26 października 2026)
 
-**Wdrożone i potwierdzone na `irr-vps`:** publikacja GHCR, timer `systemd`, kontrola FFmpeg/harmonogramu i pierwsza aktualizacja v2.2.1. **Wydanie v2.2.2** dodaje atomową blokadę; hostowy skrypt został już podmieniony, lecz uruchomienie nowego obrazu na VPS trzeba osobno potwierdzić w dzienniku usługi.
+**Wdrożone i potwierdzone na `irr-vps`:** publikacja GHCR, timer `systemd`, kontrola FFmpeg/harmonogramu, wdrożenia v2.2.1 i **v2.2.2**. Nowy obraz v2.2.2 został automatycznie uruchomiony **26.10.2026 o 03:01:21 CET**; logi potwierdziły blokadę wyłączną hostowego aktualizatora, a kontener zgłosił `flock-v1`.
 
 | Element | Stan |
 |---|---|
 | Repozytorium | [sp7uto/internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder) |
-| Wydanie w repozytorium | `v2.2.2` |
+| Stabilne wydanie (wdrożone na VPS) | `v2.2.2` |
 | Publiczny rejestr | [GHCR: internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) |
 | Obraz śledzony przez VPS | `ghcr.io/sp7uto/internet-radio-recorder:stable` |
-| Wersjonowany obraz nowego wydania | `ghcr.io/sp7uto/internet-radio-recorder:v2.2.2` (po publikacji) |
+| Wersjonowany obraz | `ghcr.io/sp7uto/internet-radio-recorder:v2.2.2` (opublikowany i wdrożony) |
 | Lokalizacja aplikacji na VPS | `/srv/irr/app` |
 | Kontener | `Internet-Radio-Recorder` |
 | Timer | `irr-docker-update.timer`; dwa terminy na godzinę, z losowym opóźnieniem do 60 s |
@@ -31,9 +31,9 @@ Ten zapis dokumentuje konkretny test na VPS; **nie jest gwarancją**, że przysz
 
 ## Atomowa blokada serwisowa — status wdrożenia
 
-Nowa blokada serwisowa należy do **wydania v2.2.2**. Skrypt hostowego aktualizatora na `irr-vps` został zaktualizowany 26.10.2026; potwierdzono zgodność katalogu `/config`. Po uruchomieniu **nowego obrazu** współdzielony `flock` rejestratora i wyłączny `flock` hostowego aktualizatora na wspólnym pliku `/config/.irr-maintenance.lock` eliminują wyścig między startem FFmpeg a przyznaniem wyłączności. Podczas pierwszego przejścia z `v2.2.1` nadal potrzebne są dwie kontrole starego rejestratora.
+Atomowa blokada serwisowa działa już produkcyjnie w **v2.2.2**. Skrypt hostowego aktualizatora na `irr-vps` został zaktualizowany 26.10.2026 i potwierdzono zgodność katalogu `/config`. Po automatycznym uruchomieniu nowego obrazu rejestrator zgłosił `flock-v1`. Współdzielony `flock` pracowników IRR i wyłączny `flock` aktualizatora korzystają z tego samego pliku `/config/.irr-maintenance.lock`, wykluczając jednoczesne przyznanie sprzecznych blokad. Podczas pierwszego przejścia z `v2.2.1` wykonano również dwie dotychczasowe kontrole FFmpeg/harmonogramu.
 
-**Nie należy utożsamiać wydania v2.2.2 na `main` z jego uruchomieniem na VPS.** Wymagana kolejność i ograniczenia: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
+**Potwierdzone wdrożenie v2.2.2:** `2026-10-26 03:00:47–03:01:21 CET` (34 s), odtworzenie kontenera `03:01:06–03:01:17` (11 s), wynik `SUKCES`, obraz awaryjny `irr-rollback:20261026-020106`; digest nowego obrazu `sha256:a10d32ef0821ce9cf04ce4e653adc06111feac357c0e2e30e95614e113807fb7`. Szczegóły i ograniczenia: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
 
 ## GitHub Actions i publikowanie obrazów
 
@@ -53,7 +53,7 @@ Znaczniki `vX.Y.Z` są wersjonowane, natomiast `:stable` wskazuje ostatnie opubl
 5. Aktualizacja jest odraczana przy nagrywaniu, nieznanym stanie, błędzie odczytu albo zbyt bliskiej audycji. Minimalny odstęp od następnego nagrania: **20 minut**. Kontrola jest wykonywana ponownie tuż przed odtworzeniem kontenera.
 6. Przed wdrożeniem zapisuje poprzedni obraz jako `irr-rollback:YYYYMMDD-HHMMSS` (UTC), aktualizuje **wyłącznie usługę IRR**, sprawdza jej API i w razie błędu próbuje automatycznie wrócić do poprzedniego obrazu oraz tworzy `HOLD`.
 
-**Ograniczenie:** kontrola harmonogramu nie blokuje atomowo rozpoczęcia nowego nagrania. Pomimo dwóch kontroli istnieje niewielkie okno wyścigu. Automatyzacja **zmniejsza ryzyko utraty audycji, ale nie gwarantuje absolutnie bezprzerwowego nagrywania**. Pełna gwarancja wymagałaby wprowadzenia blokady serwisowej do logiki IRR lub drugiego rejestratora.
+**Ograniczenie:** w v2.2.2 blokada `flock` zapewnia atomową koordynację przyznania prawa do uruchomienia FFprobe/FFmpeg i wyłączności aktualizatora. **Nie gwarantuje jednak nagrywania bez żadnej przerwy:** audycja zaplanowana dokładnie podczas odtwarzania kontenera może rozpocząć zapis z opóźnieniem. Pełna ciągłość wymagałaby drugiego rejestratora lub architektury pozwalającej aktualizować aplikację bez przerwania procesu nagrywania.
 
 ## Pliki zainstalowane na irr-vps
 
