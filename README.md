@@ -28,13 +28,13 @@
   <a href="docs/screenshots/IRR01.png"><img src="docs/screenshots/IRR01.png" alt="Internet Radio Recorder — Today view and scheduled recordings" width="900"></a>
 </p>
 
-<p align="center"><sub>Today view — illustrative historical capture (version label updated to v2.2.1), not a live screenshot of v2.2.2.</sub></p>
+<p align="center"><sub>Today view — illustrative historical capture (version label updated to v2.2.1), not a live screenshot of the current release.</sub></p>
 
 ## Why Internet Radio Recorder?
 
 Choose programmes, set a weekly schedule, and let IRR record them to your own storage. Manage everything in a browser — without maintaining individual cron jobs or deploying a full broadcast automation stack. Designed for Docker-based home servers and NAS installations.
 
-**Current stable version: [v2.2.2](https://github.com/sp7uto/internet-radio-recorder/releases/tag/v2.2.2).** New in this release: [atomic coordination between recording and the optional VPS updater](RELEASE_NOTES_v2.2.2.md).
+**Current stable version: [v2.2.3](https://github.com/sp7uto/internet-radio-recorder/releases/tag/v2.2.3).** This maintenance release corrects the [volume usage label](RELEASE_NOTES_v2.2.3.md); the v2.2.2 atomic maintenance gate remains unchanged.
 
 ## Features
 
@@ -54,7 +54,7 @@ Choose programmes, set a weekly schedule, and let IRR record them to your own st
 
 These six images are **historical example captures**, with their displayed title
 updated to **v2.2.1**. They illustrate the interface and sample data, not a fresh
-capture from the v2.2.2 production deployment. Click to see the full image.
+capture from the current production release. Click to see the full image.
 
 | | |
 | :---: | :---: |
@@ -189,7 +189,7 @@ authentication. Read [SECURITY.md](SECURITY.md) before deploying.
 | [Scheduling](docs/SCHEDULING.md) | [Automatic Docker updates (GHCR / VPS)](docs/AUTOMATIC_UPDATES.md) |
 | [Backup and import/merge](docs/BACKUP_AND_MERGE.md) | [Atomic maintenance gate (v2.2.2)](docs/ATOMIC_MAINTENANCE.md) |
 | [Security](SECURITY.md) | [GitHub publishing](docs/GITHUB_PUBLISHING.md) |
-| [Changelog](CHANGELOG.md) | [Release notes v2.2.2](RELEASE_NOTES_v2.2.2.md) |
+| [Changelog](CHANGELOG.md) | [Release notes v2.2.3](RELEASE_NOTES_v2.2.3.md) |
 
 ## Technical Details
 
@@ -199,10 +199,10 @@ mounted `/config` and `/recordings` directories must be writable by that user.
 
 ## Latest Release & Docker Delivery
 
-**Stable: [v2.2.2](https://github.com/sp7uto/internet-radio-recorder/releases/tag/v2.2.2).**
-This release adds an atomic maintenance gate coordinating recorder workers
-with the optional VPS Docker updater. It also includes the MP3/AAC and
-recording diagnostics improvements from v2.2.1.
+**Stable: [v2.2.3](https://github.com/sp7uto/internet-radio-recorder/releases/tag/v2.2.3).**
+This maintenance release changes only the volume usage label to
+`Zajętość wolumenu`. The atomic maintenance gate from v2.2.2 and MP3/AAC
+recording diagnostics from v2.2.1 remain unchanged.
 
 Versioned and stable images are published to
 [GHCR](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder),

@@ -1,6 +1,6 @@
 # Instalacja i aktualizacja IRR
 
-Stan dokumentacji: **v2.2.2** (2026-10-26). Zakładamy Docker Compose v2.
+Stan dokumentacji: **v2.2.3** (2026-10-26). Zakładamy Docker Compose v2.
 
 ## Zwykła instalacja
 
@@ -31,7 +31,7 @@ Kontener działa z UID 1000; zapewnij mu uprawnienia do obu katalogów. Nie uży
 
 ## Synology / Portainer
 
-Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją produkcyjną. Typowe katalogi przykładowe: `/volume1/docker/internet-radio-recorder/config` oraz `/volume1/docker/radio`. Dopasuj je do swojej instalacji i ustaw obraz `internet-radio-recorder:2.2.2` dopiero po jego lokalnym zbudowaniu. Nie nadpisuj danych ani nie uruchamiaj dodatkowego rejestratora przypadkowo.
+Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją produkcyjną. Typowe katalogi przykładowe: `/volume1/docker/internet-radio-recorder/config` oraz `/volume1/docker/radio`. Dopasuj je do swojej instalacji i ustaw obraz `internet-radio-recorder:2.2.3` dopiero po jego lokalnym zbudowaniu. Nie nadpisuj danych ani nie uruchamiaj dodatkowego rejestratora przypadkowo.
 
 ## Automatyczna aktualizacja przez GHCR
 
