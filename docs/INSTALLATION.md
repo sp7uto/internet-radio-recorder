@@ -37,6 +37,8 @@ Plik `docker-compose-portainer.yml` jest **przykładem**, nie konfiguracją prod
 
 **Dostępne i przetestowane** dla instalacji referencyjnej `irr-vps`: publiczny obraz GHCR `ghcr.io/sp7uto/internet-radio-recorder:stable`, timer `systemd`, kontrola FFmpeg i harmonogramu oraz rollback. Pierwsze automatyczne wdrożenie zakończyło się sukcesem **26.10.2026 o 01:30 CET**. Patrz [AUTOMATIC_UPDATES.md](AUTOMATIC_UPDATES.md).
 
+Nowa **atomowa blokada serwisowa** jest przygotowana dla następnego wydania; na VPS zacznie działać dopiero po wdrożeniu nowego aktualizatora i obrazu rejestratora: [ATOMIC_MAINTENANCE.md](ATOMIC_MAINTENANCE.md).
+
 W zwykłej instalacji Docker Compose **timer nie jest instalowany automatycznie**. Skrypt `deploy/install-vps.sh` jest dostosowany do konkretnego układu `irr-vps`; nie uruchamiaj go na Synology/QNAP ani na innym serwerze bez weryfikacji projektu, ścieżek i usług. Samo scalenie zmian na GitHubie nie włącza aktualizatora na kolejnych serwerach.
 
 ## Zmienne
