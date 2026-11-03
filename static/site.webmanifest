@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "Internet Radio Recorder",
+  "short_name": "IRR",
+  "description": "Nagrywanie radia internetowego i zarządzanie harmonogramem nagrań",
+  "lang": "pl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/static/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
