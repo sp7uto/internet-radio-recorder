@@ -1,5 +1,7 @@
 # Architecture
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Architecture-PL)** · 🇬🇧 English
+
 This page describes the product architecture, not the private network layout of any individual deployment.
 
 ## System overview
