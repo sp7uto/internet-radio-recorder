@@ -1,5 +1,7 @@
 # Atomowa blokada serwisowa IRR — projekt i procedura wdrożenia
 
+**🇵🇱 Polski** · [🇬🇧 English](en/ATOMIC_MAINTENANCE.md)
+
 > **Status 26.10.2026: WDROŻONE NA `irr-vps`.** GitHub opublikował
 > wydanie i obraz **v2.2.2**. Timer produkcyjnego VPS automatycznie
 > wdrożył obraz i zakończył o **03:01:21 CET** ze statusem `SUKCES`.
