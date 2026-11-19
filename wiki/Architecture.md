@@ -48,7 +48,7 @@ Not every radio server guarantees uninterrupted broadcasting. A stream test veri
 
 A normal installation consists of the application container and host-mounted configuration/recording directories. It does **not** need a QNAP-to-Synology copy chain, an external backup server, an automatic VPS update timer or a public reverse proxy to operate.
 
-The optional reference VPS updater has its own safety mechanisms and documentation. See [Updates and Recovery](https://github.com/sp7uto/internet-radio-recorder/wiki/Updates-and-Recovery) and [Automatic Docker Updates](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/AUTOMATIC_UPDATES.md).
+The optional reference VPS updater has its own safety mechanisms and documentation. See [Updates and Recovery](https://github.com/sp7uto/internet-radio-recorder/wiki/Updates-and-Recovery) and [Automatic Docker Updates](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/AUTOMATIC_UPDATES.md).
 
 ## Security boundary
 
@@ -59,5 +59,5 @@ The administration UI has no built-in login. Restrict network access to trusted 
 - [Getting Started](https://github.com/sp7uto/internet-radio-recorder/wiki/Getting-Started)
 - [Scheduling](https://github.com/sp7uto/internet-radio-recorder/wiki/Scheduling)
 - [Storage and Backups](https://github.com/sp7uto/internet-radio-recorder/wiki/Storage-and-Backups)
-- [API reference](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/API.md)
+- [API reference](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/API.md)
 - [Security](https://github.com/sp7uto/internet-radio-recorder/wiki/Security)
