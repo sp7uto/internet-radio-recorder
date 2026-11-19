@@ -1,4 +1,4 @@
-<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczOqcsyF5Rs2ZtRydlQZtXwY0vSgBL9SUJ-lxjPgC7s2dPEhaeKChQNHBGXQsNs5jMrkiz4ACpgEMVHDZaR1HbQC4BfwkgpnOQxJwh3L9lYijl1YMPzm=w600-h315-p-k" alt="Internet Radio Recorder — grafika otwierająca" width="850"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/images/irr-header.jpg" alt="Internet Radio Recorder — grafika otwierająca" width="850"></p>
 
 <p align="center"><img src="https://github.com/sp7uto/internet-radio-recorder/raw/refs/heads/main/static/favicon.svg" alt="IRR logo" width="84"></p>
 
@@ -92,4 +92,4 @@ Internet Radio Recorder · Open-source software · MIT License
 
 ---
 
-<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczMpFfgpSg5MFwkl6plNhU9WvEjpZSfKTKJhRgi0BurHKIXvoEoel71IlYdIudglNqRmVXjd71lsAZ_Zj8LKj0oAHOAoTiOHaaf-GCiNPmRPLF3eRpfO=w600-h315-p-k" alt="Internet Radio Recorder — grafika końcowa" width="850"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/images/irr-footer.jpg" alt="Internet Radio Recorder — grafika końcowa" width="850"></p>
