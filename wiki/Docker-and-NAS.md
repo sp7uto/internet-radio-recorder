@@ -2,6 +2,8 @@
 
 **[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Docker-and-NAS-PL)** · 🇬🇧 English
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Docker-and-NAS-PL)** · 🇬🇧 English
+
 IRR is designed for a Docker host, including compatible Synology and QNAP NAS devices or a Linux home server.
 
 ## Deployment options
