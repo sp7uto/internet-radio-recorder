@@ -1,5 +1,7 @@
 # Backup, Import / scal i Przywróć backup
 
+**🇵🇱 Polski** · [🇬🇧 English](en/BACKUP_AND_MERGE.md)
+
 ## Backup
 
 Przycisk **Backup** pobiera JSON w formacie:
