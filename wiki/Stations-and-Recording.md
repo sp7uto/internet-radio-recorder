@@ -31,4 +31,4 @@ The recorder reports missing/empty output files as errors rather than mistaking 
 
 Station configuration normally lives at `/config/stations.json`. Treat it as valuable data: make backups before bulk changes or imports and ensure the container user can write to `/config`.
 
-See the [Configuration reference](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/CONFIGURATION.md), [API reference](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/API.md) and [Troubleshooting](https://github.com/sp7uto/internet-radio-recorder/wiki/Troubleshooting).
+See the [Configuration reference](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/CONFIGURATION.md), [API reference](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/API.md) and [Troubleshooting](https://github.com/sp7uto/internet-radio-recorder/wiki/Troubleshooting).
