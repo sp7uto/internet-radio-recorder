@@ -1,3 +1,5 @@
+<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczOqcsyF5Rs2ZtRydlQZtXwY0vSgBL9SUJ-lxjPgC7s2dPEhaeKChQNHBGXQsNs5jMrkiz4ACpgEMVHDZaR1HbQC4BfwkgpnOQxJwh3L9lYijl1YMPzm=w600-h315-p-k" alt="Internet Radio Recorder — grafika otwierająca" width="850"></p>
+
 # Internet Radio Recorder — Dokumentacja
 
 <p align="center"><img src="https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/static/favicon.svg" width="84" alt="Logo IRR"></p>
@@ -69,3 +71,7 @@ Panel dostępny jest zwykle pod `http://adres-serwera:8080` — **wyłącznie w 
 [Kod źródłowy](https://github.com/sp7uto/internet-radio-recorder) · [Wydania](https://github.com/sp7uto/internet-radio-recorder/releases) · [Obrazy Docker](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) · [Dokumentacja techniczna](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs) · [Zgłoszenia](https://github.com/sp7uto/internet-radio-recorder/issues)
 
 **Zakres:** Wiki jest podręcznikiem użytkownika; szczegółowe i zależne od wersji procedury zawiera katalog [docs/](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs). Automatyczny aktualizator VPS jest rozwiązaniem opcjonalnym, a nie częścią standardowej instalacji Compose.
+
+---
+
+<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczMpFfgpSg5MFwkl6plNhU9WvEjpZSfKTKJhRgi0BurHKIXvoEoel71IlYdIudglNqRmVXjd71lsAZ_Zj8LKj0oAHOAoTiOHaaf-GCiNPmRPLF3eRpfO=w600-h315-p-k" alt="Internet Radio Recorder — grafika końcowa" width="850"></p>
