@@ -1,5 +1,7 @@
 # Scheduling
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Scheduling-PL)** · 🇬🇧 English
+
 IRR supports multiple weekly programme entries per station, recording margins, and programmes that cross midnight.
 
 ## Example entry
