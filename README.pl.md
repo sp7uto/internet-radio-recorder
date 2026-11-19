@@ -1,3 +1,5 @@
+<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczOqcsyF5Rs2ZtRydlQZtXwY0vSgBL9SUJ-lxjPgC7s2dPEhaeKChQNHBGXQsNs5jMrkiz4ACpgEMVHDZaR1HbQC4BfwkgpnOQxJwh3L9lYijl1YMPzm=w600-h315-p-k" alt="Internet Radio Recorder — grafika otwierająca" width="850"></p>
+
 <p align="center"><img src="static/favicon.svg" width="80" height="80" alt="Logo Internet Radio Recorder"></p>
 
 <h1 align="center">Internet Radio Recorder</h1>
@@ -124,3 +126,7 @@ Pełne rozdziały Wiki są dostępne w obydwu językach, z bezpośrednimi przeł
 ## Rozwój i licencja
 
 Propozycje zmian i zgłoszenia błędów: [GitHub Issues](https://github.com/sp7uto/internet-radio-recorder/issues). Projekt jest udostępniany na [licencji MIT](LICENSE).
+
+---
+
+<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczMpFfgpSg5MFwkl6plNhU9WvEjpZSfKTKJhRgi0BurHKIXvoEoel71IlYdIudglNqRmVXjd71lsAZ_Zj8LKj0oAHOAoTiOHaaf-GCiNPmRPLF3eRpfO=w600-h315-p-k" alt="Internet Radio Recorder — grafika końcowa" width="850"></p>
