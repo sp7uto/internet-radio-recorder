@@ -1,5 +1,7 @@
 # Contributing
 
+**🇵🇱 Polski** · [🇬🇧 English](CONTRIBUTING.en.md)
+
 Zmiany są mile widziane w postaci małych, czytelnych pull requestów.
 
 Przed wysłaniem PR:
