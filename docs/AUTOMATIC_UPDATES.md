@@ -1,5 +1,7 @@
 # Automatyczne aktualizacje IRR — GitHub → GHCR → VPS
 
+**🇵🇱 Polski** · [🇬🇧 English](en/AUTOMATIC_UPDATES.md)
+
 ## Aktualny stan (26 października 2026)
 
 **Wdrożone i potwierdzone na `irr-vps`:** publikacja GHCR, timer `systemd`, kontrola FFmpeg/harmonogramu, wdrożenia v2.2.1 i **v2.2.2**. Nowy obraz v2.2.2 został automatycznie uruchomiony **26.10.2026 o 03:01:21 CET**; logi potwierdziły blokadę wyłączną hostowego aktualizatora, a kontener zgłosił `flock-v1`.
