@@ -83,7 +83,7 @@ Open `http://server-address:8080` **on a trusted network only**. Full details: [
 
 [Source code](https://github.com/sp7uto/internet-radio-recorder) · [Releases](https://github.com/sp7uto/internet-radio-recorder/releases) · [Container images](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) · [Technical documentation](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs) · [Report a problem](https://github.com/sp7uto/internet-radio-recorder/issues)
 
-**Documentation scope:** Wiki pages are learning and navigation guides. The version-specific files under [`docs/`](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs) and [`SECURITY.md`](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.md) are the authoritative operational references. The automatic-update timer used on the project's reference VPS is optional and is **not** installed by ordinary Docker Compose deployments.
+**Documentation scope:** Wiki pages are learning and navigation guides. The version-specific files under [`docs/`](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs) and [`SECURITY.md`](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.en.md) are the authoritative operational references. The automatic-update timer used on the project's reference VPS is optional and is **not** installed by ordinary Docker Compose deployments.
 
 ---
 Internet Radio Recorder · Open-source software · MIT License
