@@ -1,7 +1,7 @@
 name: Publish Wiki
 
-# Publishing is isolated from the IRR application and Docker workflows.
-# The repository Wiki must be initialized once in GitHub's web UI.
+# The source of truth is wiki/*.md on main.
+# This workflow never changes IRR application containers or data.
 on:
   push:
     branches:
@@ -20,41 +20,66 @@ concurrency:
 
 jobs:
   publish:
-    name: Sync documentation to GitHub Wiki
+    name: Sync bilingual documentation to GitHub Wiki
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout Wiki source
+      - name: Check out wiki source
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      - name: Publish Markdown pages without deleting other Wiki content
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate Polish and English pages
         shell: bash
         run: |
-          set -Eeuo pipefail
+          set -euo pipefail
+          test -s wiki/Home.md
+          test -s wiki/Home-PL.md
+          test -s wiki/_Sidebar.md
+          for f in wiki/*.md; do
+            test -s "$f" || { echo "::error file=$f::Empty page"; exit 1; }
+            case "$f" in
+              wiki/Home.md|wiki/Home-PL.md|wiki/_Sidebar.md) ;;
+              wiki/*-PL.md)
+                test -s "${f%-PL.md}.md" || { echo "::error file=$f::English page missing"; exit 1; }
+                ;;
+              *)
+                test -s "${f%.md}-PL.md" || { echo "::error file=$f::Polish page missing"; exit 1; }
+                ;;
+            esac
+          done
+
+      - name: Publish pages without deleting unrelated wiki content
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
 
-          # GitHub creates this separate repository only after someone saves
-          # the first page in the Wiki UI. Never force-initialize or force-push.
-          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git"
-          if ! git clone --quiet --depth 1 "$remote" "$tmp/wiki-live"; then
-            echo "::error::Wiki not initialized. Open the Wiki tab and create its first Home page."
-            exit 1
-          fi
+          # Authenticate Git transport without embedding the token in a remote URL.
+          AUTH="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          HEADER="AUTHORIZATION: basic $AUTH"
+          REMOTE="https://github.com/${GITHUB_REPOSITORY}.wiki.git"
 
-          # wiki/*.md is the source of truth. Preserve any unrelated Wiki files.
+          git -c "http.https://github.com/.extraheader=$HEADER" \
+            clone --quiet "$REMOTE" "$tmp/wiki-live" || {
+              echo "::error::Could not clone Wiki. Ensure Wiki has an initial Home page and Actions has write access."
+              exit 1
+            }
+
+          # The source files are authoritative. Do not remove unrelated pages.
           cp wiki/*.md "$tmp/wiki-live/"
           git -C "$tmp/wiki-live" add -- '*.md'
+
           if git -C "$tmp/wiki-live" diff --cached --quiet; then
-            echo "Wiki already matches repository source."
+            echo "Wiki already up to date."
             exit 0
           fi
 
           git -C "$tmp/wiki-live" config user.name "github-actions[bot]"
           git -C "$tmp/wiki-live" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git -C "$tmp/wiki-live" commit -m "Sync IRR documentation from ${GITHUB_SHA:0:12}"
-          git -C "$tmp/wiki-live" push origin HEAD
-          echo "Published Wiki pages from wiki/*.md"
+          git -C "$tmp/wiki-live" commit -m "docs: sync bilingual wiki from ${GITHUB_SHA:0:12}"
+          git -C "$tmp/wiki-live" -c "http.https://github.com/.extraheader=$HEADER" push origin HEAD
+          echo "Published bilingual wiki successfully."
