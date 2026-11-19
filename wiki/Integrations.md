@@ -2,6 +2,8 @@
 
 **[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Integrations-PL)** · 🇬🇧 English
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Integrations-PL)** · 🇬🇧 English
+
 ## ICS calendar
 
 You can subscribe to the IRR recording schedule from a calendar app using:
