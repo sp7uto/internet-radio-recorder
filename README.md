@@ -1,3 +1,5 @@
+<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczOqcsyF5Rs2ZtRydlQZtXwY0vSgBL9SUJ-lxjPgC7s2dPEhaeKChQNHBGXQsNs5jMrkiz4ACpgEMVHDZaR1HbQC4BfwkgpnOQxJwh3L9lYijl1YMPzm=w600-h315-p-k" alt="Internet Radio Recorder — grafika otwierająca" width="850"></p>
+
 <p align="center">
   <img src="static/favicon.svg" width="80" height="80" alt="Internet Radio Recorder logo">
 </p>
@@ -240,3 +242,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.en.md) and open a
 
 Internet Radio Recorder is released under the
 [MIT License](LICENSE).
+
+---
+
+<p align="center"><img src="https://lh3.googleusercontent.com/pw/AP1GczMpFfgpSg5MFwkl6plNhU9WvEjpZSfKTKJhRgi0BurHKIXvoEoel71IlYdIudglNqRmVXjd71lsAZ_Zj8LKj0oAHOAoTiOHaaf-GCiNPmRPLF3eRpfO=w600-h315-p-k" alt="Internet Radio Recorder — grafika końcowa" width="850"></p>
