@@ -107,7 +107,7 @@ capture from the current production release. Click to see the full image.
 > before enabling remote access.
 
 For installation options, upgrades and permissions, see
-[Installation and upgrades](docs/INSTALLATION.md).
+[Installation and upgrades](docs/en/INSTALLATION.md).
 
 ## Synology / Portainer
 
@@ -120,7 +120,7 @@ Example Synology paths (adapt to your own NAS):
 ```
 
 This is **an example, not a production configuration**. See the
-[installation guide](docs/INSTALLATION.md) before deploying.
+[installation guide](docs/en/INSTALLATION.md) before deploying.
 
 ## Scheduling
 
@@ -140,7 +140,7 @@ Each station may have multiple entries for each day of the week:
 midnight are supported. With **one file per programme**, the nominal start
 of the next programme takes priority over overlapping recording margins.
 
-See [Scheduling](docs/SCHEDULING.md).
+See [Scheduling](docs/en/SCHEDULING.md).
 
 ## Backup and Import
 
@@ -153,7 +153,7 @@ See [Scheduling](docs/SCHEDULING.md).
 Before importing, IRR creates a timestamped backup:
 `stations.before-import-YYYYMMDD-HHMMSS.json`.
 
-See [Backup and import/merge](docs/BACKUP_AND_MERGE.md).
+See [Backup and import/merge](docs/en/BACKUP_AND_MERGE.md).
 
 ## ICS Calendar
 
@@ -180,17 +180,20 @@ stop recordings, or delete files from the library.
 
 **Never expose port `8080` directly to the public Internet.** For remote
 access, use **Tailscale**, another VPN, or a reverse proxy with HTTPS and
-authentication. Read [SECURITY.md](SECURITY.md) before deploying.
+authentication. Read [SECURITY.md](SECURITY.en.md) before deploying.
 
 ## Documentation
 
+[🇬🇧 English technical documentation](docs/README.md) · [🇵🇱 Dokumentacja po polsku](README.pl.md) · [🇬🇧 Wiki](https://github.com/sp7uto/internet-radio-recorder/wiki/Home) · [🇵🇱 Wiki](https://github.com/sp7uto/internet-radio-recorder/wiki/Home-PL)
+
+
 | Getting started | Reference & operations |
 | --- | --- |
-| [Installation and upgrades](docs/INSTALLATION.md) | [API and endpoints](docs/API.md) |
-| [Configuration](docs/CONFIGURATION.md) | [Troubleshooting](docs/TROUBLESHOOTING.md) |
-| [Scheduling](docs/SCHEDULING.md) | [Automatic Docker updates (GHCR / VPS)](docs/AUTOMATIC_UPDATES.md) |
-| [Backup and import/merge](docs/BACKUP_AND_MERGE.md) | [Atomic maintenance gate (v2.2.2)](docs/ATOMIC_MAINTENANCE.md) |
-| [Security](SECURITY.md) | [GitHub publishing](docs/GITHUB_PUBLISHING.md) |
+| [Installation and upgrades](docs/en/INSTALLATION.md) | [API and endpoints](docs/en/API.md) |
+| [Configuration](docs/en/CONFIGURATION.md) | [Troubleshooting](docs/en/TROUBLESHOOTING.md) |
+| [Scheduling](docs/en/SCHEDULING.md) | [Automatic Docker updates (GHCR / VPS)](docs/en/AUTOMATIC_UPDATES.md) |
+| [Backup and import/merge](docs/en/BACKUP_AND_MERGE.md) | [Atomic maintenance gate (v2.2.2)](docs/en/ATOMIC_MAINTENANCE.md) |
+| [Security](SECURITY.en.md) | [GitHub publishing](docs/en/GITHUB_PUBLISHING.md) |
 | [Changelog](CHANGELOG.md) | [Release notes v2.2.3](RELEASE_NOTES_v2.2.3.md) |
 
 ## Technical Details
@@ -222,7 +225,7 @@ image was retained for rollback.
 
 This automation is **specific to the reference VPS**; a normal
 Docker Compose installation does not automatically install the timer.
-See [Automatic updates](docs/AUTOMATIC_UPDATES.md) for its prerequisites,
+See [Automatic updates](docs/en/AUTOMATIC_UPDATES.md) for its prerequisites,
 safety limitations and rollback.
 
 </details>
@@ -230,7 +233,7 @@ safety limitations and rollback.
 ## Contributing & Feedback
 
 Bug reports, feature requests and pull requests are welcome.
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) and open a
+Please read [CONTRIBUTING.md](CONTRIBUTING.en.md) and open a
 [GitHub Issue](https://github.com/sp7uto/internet-radio-recorder/issues).
 
 ## License
