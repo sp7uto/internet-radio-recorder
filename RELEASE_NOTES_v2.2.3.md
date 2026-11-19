@@ -1,5 +1,7 @@
 # Internet Radio Recorder v2.2.3 — poprawka opisu wolumenu
 
+**🇵🇱 Polski** · [🇬🇧 English](RELEASE_NOTES_v2.2.3.en.md)
+
 ## Zmieniono
 
 - Etykieta zajętości dysku nie sugeruje już konkretnej platformy NAS:
