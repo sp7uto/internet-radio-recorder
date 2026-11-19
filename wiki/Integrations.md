@@ -22,4 +22,4 @@ Optional integrations include **NTFY** and webhook endpoints. `NOTIFY_ON_COMPLET
 
 Keep webhook URLs and any authentication tokens out of public documentation and screenshots.
 
-References: [Installation and environment settings](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/INSTALLATION.md), [Scheduling](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/SCHEDULING.md), [Security](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.md).
+References: [Installation and environment settings](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/INSTALLATION.md), [Scheduling](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/SCHEDULING.md), [Security](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.en.md).
