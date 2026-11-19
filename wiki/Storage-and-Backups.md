@@ -1,5 +1,7 @@
 # Storage and Backups
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Storage-and-Backups-PL)** · 🇬🇧 English
+
 ## Storage layout
 
 The container expects two persistent mounts:
