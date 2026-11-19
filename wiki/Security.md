@@ -1,5 +1,7 @@
 # Security
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Security-PL)** · 🇬🇧 English
+
 > [!CAUTION]
 > **The IRR administration panel has no built-in authentication.** Do **not** expose its HTTP port 8080 directly to the public Internet.
 
