@@ -1,5 +1,7 @@
 # Rozwiązywanie problemów
 
+**🇵🇱 Polski** · [🇬🇧 English](en/TROUBLESHOOTING.md)
+
 ## Nie zapisuje `stations.json`
 
 Sprawdź, czy katalog podmontowany jako `/config` jest zapisywalny dla UID `1000`. Panel powinien pokazać konkretny komunikat błędu.
