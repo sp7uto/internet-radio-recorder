@@ -30,4 +30,4 @@ Published GHCR packages: [Internet Radio Recorder container](https://github.com/
 
 The repository also provides local image builds from source. **The automatic guarded-updater configuration documented for the reference VPS is optional and not installed by default on Synology/QNAP.**
 
-Detailed instructions: [Installation](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/INSTALLATION.md), [Configuration](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/CONFIGURATION.md), [Security](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.md).
+Detailed instructions: [Installation](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/INSTALLATION.md), [Configuration](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/CONFIGURATION.md), [Security](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.en.md).
