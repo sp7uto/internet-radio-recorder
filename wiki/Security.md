@@ -24,4 +24,4 @@ Keep webhook secrets, NTFY tokens and credentials out of issue reports, screensh
 
 Remove actual private stream URLs (where relevant), credentials, access tokens, addresses you do not wish to publish, and unrelated personal data.
 
-Read the full [SECURITY.md](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.md) and use the project's designated reporting method for security issues.
+Read the full [SECURITY.md](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.en.md) and use the project's designated reporting method for security issues.
