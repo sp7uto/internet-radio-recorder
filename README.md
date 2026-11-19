@@ -4,6 +4,8 @@
 
 <h1 align="center">Internet Radio Recorder</h1>
 
+<p align="center"><a href="README.pl.md">🇵🇱 Polski</a> · <strong>🇬🇧 English</strong></p>
+
 <p align="center">
   <strong>Schedule it. Record it. Keep it.</strong><br>
   Self-hosted Internet radio recording for your NAS or home server.
