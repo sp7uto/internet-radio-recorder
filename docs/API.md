@@ -1,5 +1,7 @@
 # API i endpointy
 
+**🇵🇱 Polski** · [🇬🇧 English](en/API.md)
+
 API jest wewnętrznym interfejsem panelu WWW. Od 2.2.0 routing obsługuje Flask, a aplikację podaje Waitress. Nadal nie ma mechanizmu logowania — patrz `SECURITY.md`.
 
 ## Odczyt
