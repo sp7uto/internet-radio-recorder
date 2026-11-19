@@ -12,7 +12,7 @@
 
 **Do not overwrite** `stations.json` with the example configuration.
 
-The detailed procedure depends on whether the installation builds the image locally or uses a versioned GHCR image. See [Installation](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/INSTALLATION.md).
+The detailed procedure depends on whether the installation builds the image locally or uses a versioned GHCR image. See [Installation](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/INSTALLATION.md).
 
 ## Optional guarded Docker updater
 
@@ -24,6 +24,6 @@ The repository includes a specialized systemd updater for a reference Linux VPS.
 The atomic gate prevents a race between a new FFmpeg start and an updater lock, but does **not** guarantee lossless capture for a programme beginning during a container restart.
 
 For diagnostics, holds, rollback and the documented production example, consult:
-- [Automatic Updates](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/AUTOMATIC_UPDATES.md)
-- [Atomic Maintenance](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/ATOMIC_MAINTENANCE.md)
+- [Automatic Updates](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/AUTOMATIC_UPDATES.md)
+- [Atomic Maintenance](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/ATOMIC_MAINTENANCE.md)
 - [Release notes](https://github.com/sp7uto/internet-radio-recorder/releases/latest)
