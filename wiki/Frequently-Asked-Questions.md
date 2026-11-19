@@ -1,5 +1,7 @@
 # Frequently Asked Questions
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Frequently-Asked-Questions-PL)** · 🇬🇧 English
+
 ## Is IRR free and self-hosted?
 Yes. IRR is distributed under the MIT license. Its files and configuration can remain on storage that you control.
 
