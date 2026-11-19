@@ -2,6 +2,8 @@
 
 **[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Stations-and-Recording-PL)** · 🇬🇧 English
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Stations-and-Recording-PL)** · 🇬🇧 English
+
 ## Adding stations
 
 Use **Stations** in the web interface to configure each Internet radio station and its stream URL. Use **Test stream** to check availability and inspect codec/bitrate metadata before planning recordings.
