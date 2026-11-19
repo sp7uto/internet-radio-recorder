@@ -1,5 +1,7 @@
 # Troubleshooting
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Troubleshooting-PL)** · 🇬🇧 English
+
 Start with **History** and **Stream Status** in the web UI. Do not delete configuration or recreate containers until you know which component failed.
 
 | Symptom | First check |
