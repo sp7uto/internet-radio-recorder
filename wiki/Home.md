@@ -1,47 +1,87 @@
-# Internet Radio Recorder
+<p align="center"><img src="https://github.com/sp7uto/internet-radio-recorder/raw/refs/heads/main/static/favicon.svg" alt="IRR logo" width="84"></p>
 
-**Schedule it. Record it. Keep it.**
+<h1 align="center">Internet Radio Recorder — Wiki</h1>
+<p align="center"><strong>Schedule it. Record it. Keep it.</strong><br>A practical guide to self-hosted Internet radio recording.</p>
 
-A self-hosted Internet radio recorder for Docker, NAS and home servers. Configure multiple radio streams, plan recordings on a weekly calendar and keep recordings on your own storage.
+<p align="center">
+<a href="https://github.com/sp7uto/internet-radio-recorder/releases/latest"><img src="https://img.shields.io/github/v/release/sp7uto/internet-radio-recorder?label=latest%20release" alt="Latest release"></a>
+<a href="https://github.com/sp7uto/internet-radio-recorder/actions/workflows/ci.yml"><img src="https://github.com/sp7uto/internet-radio-recorder/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+<a href="https://github.com/sp7uto/internet-radio-recorder/blob/main/LICENSE"><img src="https://img.shields.io/github/license/sp7uto/internet-radio-recorder" alt="License"></a>
+</p>
 
-[![Current release](https://img.shields.io/github/v/release/sp7uto/internet-radio-recorder?label=release)](https://github.com/sp7uto/internet-radio-recorder/releases/latest) [![CI](https://github.com/sp7uto/internet-radio-recorder/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sp7uto/internet-radio-recorder/actions/workflows/ci.yml) [![MIT](https://img.shields.io/github/license/sp7uto/internet-radio-recorder)](https://github.com/sp7uto/internet-radio-recorder/blob/main/LICENSE)
+![Internet Radio Recorder dashboard](https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/screenshots/IRR01.png)
 
-![Today view of Internet Radio Recorder](https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/screenshots/IRR01.png)
+*Illustrative historical screenshot, not a live view or a screenshot of the latest release.*
 
-*Illustrative historical interface screenshot (version label updated to v2.2.1); not a live production image.*
+## Welcome
 
-## Start here
+**Internet Radio Recorder (IRR)** helps you record radio programmes from Internet streams on a NAS, home server or VPS. Define stations and recurring schedules, then manage recordings from a browser. Audio is saved on your own storage.
 
-| I want to... | Wiki guide |
+## Find your way
+
+| I want to… | Read |
 | --- | --- |
-| Install IRR in Docker | [Getting Started](https://github.com/sp7uto/internet-radio-recorder/wiki/Getting-Started) |
-| Add radio streams or inspect recording diagnostics | [Stations and Recording](https://github.com/sp7uto/internet-radio-recorder/wiki/Stations-and-Recording) |
-| Plan weekly programmes and recording margins | [Scheduling](https://github.com/sp7uto/internet-radio-recorder/wiki/Scheduling) |
-| Manage files, retention, backups and imports | [Storage and Backups](https://github.com/sp7uto/internet-radio-recorder/wiki/Storage-and-Backups) |
-| Run IRR on Synology, QNAP or another NAS | [Docker and NAS](https://github.com/sp7uto/internet-radio-recorder/wiki/Docker-and-NAS) |
-| Use ICS calendars, notifications and web UI | [Integrations](https://github.com/sp7uto/internet-radio-recorder/wiki/Integrations) |
-| Learn about safe automatic updates and recovery | [Updates and Recovery](https://github.com/sp7uto/internet-radio-recorder/wiki/Updates-and-Recovery) |
-| Diagnose recording issues | [Troubleshooting](https://github.com/sp7uto/internet-radio-recorder/wiki/Troubleshooting) |
-| Protect the web panel | [Security](https://github.com/sp7uto/internet-radio-recorder/wiki/Security) |
+| Install the application | [Getting Started](https://github.com/sp7uto/internet-radio-recorder/wiki/Getting-Started) |
+| Understand the components and recording flow | [Architecture](https://github.com/sp7uto/internet-radio-recorder/wiki/Architecture) |
+| Add or test a radio stream, or start a manual recording | [Stations and Recording](https://github.com/sp7uto/internet-radio-recorder/wiki/Stations-and-Recording) |
+| Schedule programmes, including recordings across midnight | [Scheduling](https://github.com/sp7uto/internet-radio-recorder/wiki/Scheduling) |
+| Organise recordings and back up station settings | [Storage and Backups](https://github.com/sp7uto/internet-radio-recorder/wiki/Storage-and-Backups) |
+| Run the application on Docker, Synology or QNAP | [Docker and NAS](https://github.com/sp7uto/internet-radio-recorder/wiki/Docker-and-NAS) |
+| Subscribe to a calendar or configure notifications | [Integrations](https://github.com/sp7uto/internet-radio-recorder/wiki/Integrations) |
+| Update or roll back a deployment | [Updates and Recovery](https://github.com/sp7uto/internet-radio-recorder/wiki/Updates-and-Recovery) |
+| Diagnose a failed or empty recording | [Troubleshooting](https://github.com/sp7uto/internet-radio-recorder/wiki/Troubleshooting) |
+| Understand access-control requirements | [Security](https://github.com/sp7uto/internet-radio-recorder/wiki/Security) |
+| Find short answers to common questions | [Frequently Asked Questions](https://github.com/sp7uto/internet-radio-recorder/wiki/Frequently-Asked-Questions) |
 
-## At a glance
+## What IRR provides
 
-- **Recording:** MP3/AAC format selection based on FFprobe; stream copying without re-encoding; manual REC/STOP.
-- **Schedules:** multiple programmes per station, weekly patterns, margins, adjacent programmes and overnight recordings.
-- **Web interface:** Today, Calendar, Stations, Stream Status, History, Recording Library and Statistics.
-- **Local storage:** keep files and settings on NAS disks; retention and storage limits by station.
-- **Deployment:** Docker Compose, Synology/Portainer example and public GHCR images.
-- **Calendar and alerts:** subscribe to ICS; optional NTFY/webhook notifications.
+| Area | Capabilities |
+| --- | --- |
+| Recording | Multiple stations, MP3/AAC source detection, stream copy without transcoding, manual REC/STOP |
+| Planning | Weekly schedules, programme titles, pre/post recording margins and midnight-crossing programmes |
+| Web interface | Today, Calendar, Stations, Stream Status, History, Recording Library and Statistics |
+| Reliability | Stream diagnostics and detection of missing or empty recording output |
+| Storage | Per-station retention and storage limits; backup, merge and restore of station configuration |
+| Integration | ICS calendar, optional NTFY and webhook notifications |
+| Deployment | Docker Compose, NAS/Portainer example, versioned container images on GHCR |
+
+## Quick start
+
+On a Docker host:
+
+```bash
+git clone https://github.com/sp7uto/internet-radio-recorder.git
+cd internet-radio-recorder
+cp .env.example .env
+cp config/stations.example.json config/stations.json
+```
+
+Set a strong `CALENDAR_TOKEN` in `.env`, check permissions for the persistent directories, then start:
+
+```bash
+docker compose up -d --build
+```
+
+Open `http://server-address:8080` **on a trusted network only**. Full details: [Getting Started](https://github.com/sp7uto/internet-radio-recorder/wiki/Getting-Started).
 
 > [!WARNING]
-> **The IRR administration panel has no built-in login.** Keep it on a trusted LAN, behind a VPN such as Tailscale, or behind an authenticated HTTPS reverse proxy. **Never publish port 8080 directly to the Internet.** [More](https://github.com/sp7uto/internet-radio-recorder/wiki/Security).
+> **IRR does not provide built-in login for its administration panel.** Never expose port 8080 directly to the public Internet. For remote use, prefer a VPN (for example Tailscale) or an HTTPS reverse proxy with authentication. See [Security](https://github.com/sp7uto/internet-radio-recorder/wiki/Security).
 
-## Source and support
+## Screenshots
 
-- [README and screenshots](https://github.com/sp7uto/internet-radio-recorder)
-- [Latest stable release](https://github.com/sp7uto/internet-radio-recorder/releases/latest)
-- [Docker images in GHCR](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder)
-- [Reference documentation](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs)
-- [Issues and feature requests](https://github.com/sp7uto/internet-radio-recorder/issues)
+| Today | Calendar |
+| :---: | :---: |
+| [![Today](https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/screenshots/IRR01.png)](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/screenshots/IRR01.png) | [![Calendar](https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/screenshots/IRR03.png)](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/screenshots/IRR03.png) |
+| Stations | Recording library |
+| [![Stations](https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/screenshots/IRR02.png)](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/screenshots/IRR02.png) | [![Library](https://raw.githubusercontent.com/sp7uto/internet-radio-recorder/main/docs/screenshots/IRR05.png)](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/screenshots/IRR05.png) |
 
-**Documentation policy:** These Wiki pages explain the product; the files in [`docs/`](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs) remain the source of truth for detailed configuration, version-specific deployment procedures and troubleshooting. The reference VPS updater is **optional and environment-specific**, not part of a regular Compose installation.
+*All screenshots illustrate earlier versions and sample data.*
+
+## Project resources
+
+[Source code](https://github.com/sp7uto/internet-radio-recorder) · [Releases](https://github.com/sp7uto/internet-radio-recorder/releases) · [Container images](https://github.com/sp7uto/internet-radio-recorder/pkgs/container/internet-radio-recorder) · [Technical documentation](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs) · [Report a problem](https://github.com/sp7uto/internet-radio-recorder/issues)
+
+**Documentation scope:** Wiki pages are learning and navigation guides. The version-specific files under [`docs/`](https://github.com/sp7uto/internet-radio-recorder/tree/main/docs) and [`SECURITY.md`](https://github.com/sp7uto/internet-radio-recorder/blob/main/SECURITY.md) are the authoritative operational references. The automatic-update timer used on the project's reference VPS is optional and is **not** installed by ordinary Docker Compose deployments.
+
+---
+Internet Radio Recorder · Open-source software · MIT License
