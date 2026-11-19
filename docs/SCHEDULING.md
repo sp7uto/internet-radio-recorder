@@ -1,5 +1,7 @@
 # Harmonogram i podział audycji
 
+**🇵🇱 Polski** · [🇬🇧 English](en/SCHEDULING.md)
+
 ## Wpis harmonogramu
 
 ```json
