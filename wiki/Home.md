@@ -1,6 +1,7 @@
 <p align="center"><img src="https://github.com/sp7uto/internet-radio-recorder/raw/refs/heads/main/static/favicon.svg" alt="IRR logo" width="84"></p>
 
 <h1 align="center">Internet Radio Recorder — Wiki</h1>
+<p align="center"><a href="https://github.com/sp7uto/internet-radio-recorder/wiki/Home-PL">🇵🇱 Polski</a> · <strong>🇬🇧 English</strong></p>
 <p align="center"><strong>Schedule it. Record it. Keep it.</strong><br>A practical guide to self-hosted Internet radio recording.</p>
 
 <p align="center">
