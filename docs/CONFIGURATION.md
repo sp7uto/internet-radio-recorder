@@ -1,5 +1,7 @@
 # Konfiguracja
 
+**🇵🇱 Polski** · [🇬🇧 English](en/CONFIGURATION.md)
+
 Główny plik to `/config/stations.json`:
 
 ```json
