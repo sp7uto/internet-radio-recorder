@@ -1,5 +1,7 @@
 # Security
 
+**🇵🇱 Polski** · [🇬🇧 English](SECURITY.en.md)
+
 ## Panel WWW
 
 Internet Radio Recorder 2.2.1 nie implementuje własnego logowania ani zarządzania użytkownikami. Każda osoba mająca dostęp do portu WWW może m.in. zmieniać stacje i harmonogram, uruchamiać nagrania, importować konfigurację oraz usuwać pliki z biblioteki.
