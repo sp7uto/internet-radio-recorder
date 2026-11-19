@@ -1,5 +1,7 @@
 # Instalacja i aktualizacja IRR
 
+**🇵🇱 Polski** · [🇬🇧 English](en/INSTALLATION.md)
+
 Stan dokumentacji: **v2.2.3** (2026-10-26). Zakładamy Docker Compose v2.
 
 ## Zwykła instalacja
