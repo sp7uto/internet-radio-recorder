@@ -44,4 +44,4 @@ On your trusted network, open `http://server-address:8080`.
 
 See [Stations and Recording](https://github.com/sp7uto/internet-radio-recorder/wiki/Stations-and-Recording), [Scheduling](https://github.com/sp7uto/internet-radio-recorder/wiki/Scheduling) and [Security](https://github.com/sp7uto/internet-radio-recorder/wiki/Security).
 
-Authoritative installation and upgrade guidance: [docs/INSTALLATION.md](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/INSTALLATION.md).
+Authoritative installation and upgrade guidance: [docs/INSTALLATION.md](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/INSTALLATION.md).
