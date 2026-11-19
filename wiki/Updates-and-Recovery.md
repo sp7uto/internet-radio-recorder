@@ -1,5 +1,7 @@
 # Updates and Recovery
 
+**[🇵🇱 Polski](https://github.com/sp7uto/internet-radio-recorder/wiki/Updates-and-Recovery-PL)** · 🇬🇧 English
+
 ## Standard Docker Compose installation
 
 1. Back up `.env`, Compose settings and `/config`.
