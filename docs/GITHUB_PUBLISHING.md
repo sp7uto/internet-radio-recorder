@@ -1,5 +1,7 @@
 # Publikowanie wydań na GitHubie
 
+**🇵🇱 Polski** · [🇬🇧 English](en/GITHUB_PUBLISHING.md)
+
 Repozytorium: [sp7uto/internet-radio-recorder](https://github.com/sp7uto/internet-radio-recorder); gałąź produkcyjna: `main`.
 
 ## Zasady
