@@ -31,4 +31,4 @@ Before import, IRR creates a timestamped copy such as `stations.before-import-YY
 
 For a NAS migration or upgrade, also back up any local `.env` and Compose configuration. Keep your recording library separately backed up where appropriate.
 
-More details: [Backup and import/merge](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/BACKUP_AND_MERGE.md) and [Installation](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/INSTALLATION.md).
+More details: [Backup and import/merge](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/BACKUP_AND_MERGE.md) and [Installation](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/INSTALLATION.md).
