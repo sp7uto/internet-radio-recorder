@@ -36,4 +36,4 @@ The schedule engine handles shows passing midnight. In **one file per programme*
 - Check **History** for the result, including diagnostic information if FFmpeg fails.
 - Allow for the source stream becoming temporarily unavailable.
 
-For authoritative edge-case behaviour, see [docs/SCHEDULING.md](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/SCHEDULING.md).
+For authoritative edge-case behaviour, see [docs/SCHEDULING.md](https://github.com/sp7uto/internet-radio-recorder/blob/main/docs/en/SCHEDULING.md).
